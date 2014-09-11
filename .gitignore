@@ -1,1 +1,8 @@
- 
+!.gitignore
+
+node_modules
+token.json
+
+.directory
+.DS_Store
+Thumbs.db
