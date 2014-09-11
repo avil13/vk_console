@@ -1,0 +1,25 @@
+{
+  "name": "vk_console",
+  "version": "0.2.0",
+  "description": "'Pacaje what can read and post message from vk.com'",
+  "main": "index.js",
+  "dependencies": {
+    "blessed": "*"
+    },
+  "devDependencies": {
+    "debug": "*"
+    },
+  "scripts": {
+    "prepublish": "npm prune",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+        "type": "git",
+        "url": "https://github.com/avil13/vk_console"
+    },
+  "keywords": [
+    "vk.com"
+  ],
+  "author": "AVIL13",
+  "license": "BSD-2-Clause"
+}
