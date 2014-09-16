@@ -1,8 +1,11 @@
 !.gitignore
 
-node_modules
-token.json
+node_modules/debug/
+node_modules/blessed/
+node_modules/.bin/
 
+token.json
+.idea/
 .directory
 .DS_Store
 Thumbs.db
