@@ -2,27 +2,7 @@ var blessed = require('blessed');
 
 // Create a screen object.
 var screen = blessed.screen();
-
-var Actions = require('Actions')(screen);
-
-
-var border = {
-    type: 'line'
-};
-
-var style = {
-    fg: '#dedede',
-    // bg: 'magenta',
-    border: {
-        fg: '#f0f0f0'
-    }
-};
-
-var scrollbar = {
-    ch: ' ',
-    fg: 'green',
-    bg: 'green',
-};
+var blocks = require('screen_blocks')(screen);
 
 /****************************
  __________  ____  __  ___
@@ -34,100 +14,28 @@ var scrollbar = {
  */
 
 
-var FriendList = blessed.List({
-    alwaysScroll: false,
-    autoCommandKeys: true,
-    height: '100%',
-    keys: true,
-    left: '0%',
-    mouse: true,
-    parent: screen,
-    selectedBold: true,
-    tags: true,
-    top: '0%',
-    width: '30%',
-    border: {
-        type: 'line'
-    },
-    vi: true,
-    style: {
-        item: {
-            // bg: 'red',
-            focus: {
-                bg: 'green'
-            }
-        },
-        selected: {
-            bg: 'blue'
-        }
-
-    }
-});
+var FriendList = blessed.List(blocks.FriendList);
 //screen.append(FriendList);
 
 
 
-var msg = blessed.Box({
-    autoCommandKeys: true,
-    scrollable: true,
-    alwaysScroll: true,
-    height: '70%',
-    keys: true,
-    left: '30%',
-    mouse: true,
-    parent: screen,
-    selectedBold: true,
-    tags: true,
-    top: '0%',
-    width: '70%',
-    border: {
-        type: 'line'
-    },
-    vi: true
-});
+var msg = blessed.Box(blocks.msg);
 
 // поле ввода
-var txt = blessed.Textarea({
-    border: border,
-    height: '28%',
-    inputOnFocus: true,
-    left: '30%',
-    keys: true,
-    parent: screen,
-    style: style,
-    top: '70%',
-    width: '70%'
-});
+var txt = blessed.Textarea(blocks.txt);
 screen.append(txt);
 
 
-var box = blessed.box({
-    height: '6%',
-    width: '50%',
-    top: '96%',
-    left: '30%',
-    parent: screen,
-    tags: true,
-    content: "{bold}Active:{/bold} Friend list [F]",
-    style: {
-        bg: '#22aa22',
-        fg: '#222222'
-    }
-});
+var box = blessed.box(blocks.box);
 
-var nav = blessed.box({
-    height: '6%',
-    width: '20%',
-    top: '96%',
-    left: '80%',
-    parent: screen,
-    tags: true,
-    content: "{bold}USE:{/bold} F, T, R",
-    style: {
-        bg: '#aa22aa',
-        fg: '#222222'
-    }
-});
+var nav = blessed.box(blocks.nav);
+
+
+// screen.render();
+
+var Actions = require('Actions')(screen);
+
+
 
 // Quit on Escape, q, or Control-C.
 screen.key(['escape', 'C-c'], function(ch, key) {
@@ -215,12 +123,9 @@ FriendList.on('select', function(index) {
        // nav.setContent( (Math.random() * (99 - 1) + 1)+'');
 // }, 3000);
 
-setInterval(function() {
-    Actions.friends();
-    // if (message_id)
-        // Actions.getHistory(message_id, msg, screen);
-}, 2660);
+// setInterval(function() {
+//     Actions.friends();
+//     // if (message_id)
+//         // Actions.getHistory(message_id, msg, screen);
+// }, 2660);
 
-
-
-// screen.render();
