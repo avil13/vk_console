@@ -13,7 +13,7 @@ var openProgram = function() {
 
     //  -------------
     var FriendList = blessed.List(blocks.FriendList);
-    screen.append(FriendList);
+    // screen.append(FriendList);
 
     var msg = blessed.Box(blocks.msg);
 
@@ -28,7 +28,6 @@ var openProgram = function() {
     screen.render();
 
     var Actions = require('Actions')(screen);
-
 
 
     // Quit on Escape, q, or Control-C.
@@ -64,7 +63,8 @@ var openProgram = function() {
         screen.render();
     });
 
-    // send message
+    // ==========================
+    // отправка сообщения
     txt.key(['C-c'], function() {
         var t = txt.getValue();
 
@@ -77,8 +77,18 @@ var openProgram = function() {
         // screen.render();
     });
 
-    // переменная для хранения ID беседы
-    var message_id = 0;
+    // ===========================
+    // получение списка диалогов
+    setTimeout(Actions.getDialogs, 5000);
+
+    // ===========================
+    // Выбор диалога для беседы
+    // ===========================
+    //
+
+
+
+
 };
 
 // Start
