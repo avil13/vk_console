@@ -15,19 +15,15 @@ var openProgram = function() {
 
     //  -------------
     ScreenBlocks.FriendList = blessed.List(settings.FriendList);
-    screen.append(ScreenBlocks.FriendList);
 
     ScreenBlocks.messages = blessed.Box(settings.messages);
 
     // поле ввода
-    ScreenBlocks.txt = blessed.Textarea(settings.txt);
+    ScreenBlocks.txt = blessed.Textbox(settings.txt);
 
     ScreenBlocks.box = blessed.box(settings.box);
 
     ScreenBlocks.nav = blessed.box(settings.nav);
-
-
-    ScreenBlocks.FriendList.focus();
 
     screen.render();
 
@@ -41,7 +37,6 @@ var openProgram = function() {
 
 
     screen.key(['t', 'T', 'е', 'Е'], function(ch, key) {
-        debugger;
         ScreenBlocks.txt.focus();
         ScreenBlocks.box.setContent("{bold}Active:{/bold} Text write [T]");
         screen.render();
