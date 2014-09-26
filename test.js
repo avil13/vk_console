@@ -5,6 +5,23 @@ var scrn = {
 var Actions = require('Actions')(scrn);
 
 
+
+// отобразить список друзей
+this.friends = function() {
+
+    console.log(ScreenBlocks);
+
+    // vk.request('friends.get', {
+    //     fields: 'uid,first_name,last_name',
+    //     count: 2,
+    //     order: 'hints'
+    // }, function(data) {
+    //     //
+    //     console.log( data );
+    // });
+
+};
+
 ////
 
 
@@ -26,10 +43,10 @@ FriendList.on('select', function(index) {
 
 //     Actions.getDialogs(FriendList, screen, msg);
 
-    //    память
-       // var m = process.memoryUsage().heapUsed;
-       // box.setContent( m+''  );
-       // nav.setContent( (Math.random() * (99 - 1) + 1)+'');
+//    память
+// var m = process.memoryUsage().heapUsed;
+// box.setContent( m+''  );
+// nav.setContent( (Math.random() * (99 - 1) + 1)+'');
 // }, 3000);
 
 // setInterval(function() {
@@ -54,4 +71,3 @@ screen.key('tab', function(ch, key) {
 
 // *    ****************
 // screen.append(txt);
-

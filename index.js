@@ -1,91 +1,114 @@
 var VK = require('VK');
 
 /**
-*   функция в которой происходит основаная работа программы
-*   вызывается полсе того как будет проверен товен
-*/
+ *   функция в которой происходит основаная работа программы
+ *   вызывается полсе того как будет проверен товен
+ */
 var openProgram = function() {
 
     var blessed = require('blessed');
     // Create a screen object.
     var screen = blessed.screen();
-    var blocks = require('screen_blocks')(screen);
+    var settings = require('screen_settings')(screen);
+
+    var ScreenBlocks = {};
 
     //  -------------
-    var FriendList = blessed.List(blocks.FriendList);
-    // screen.append(FriendList);
+    ScreenBlocks.FriendList = blessed.List(settings.FriendList);
+    screen.append(ScreenBlocks.FriendList);
 
-    var msg = blessed.Box(blocks.msg);
+    ScreenBlocks.messages = blessed.Box(settings.messages);
 
     // поле ввода
-    var txt = blessed.Textarea(blocks.txt);
+    ScreenBlocks.txt = blessed.Textarea(settings.txt);
 
-    var box = blessed.box(blocks.box);
+    ScreenBlocks.box = blessed.box(settings.box);
 
-    var nav = blessed.box(blocks.nav);
+    ScreenBlocks.nav = blessed.box(settings.nav);
 
+
+    ScreenBlocks.FriendList.focus();
 
     screen.render();
 
-    var Actions = require('Actions')(screen);
+    var Actions = require('Actions')(ScreenBlocks);
 
 
-    // Quit on Escape, q, or Control-C.
-    screen.key(['escape', 'C-c'], function(ch, key) {
+    // Quit on Escape
+    screen.key(['escape'], function(ch, key) {
         return process.exit(0);
     });
 
 
     screen.key(['t', 'T', 'е', 'Е'], function(ch, key) {
-        box.setContent("{bold}Active:{/bold} Text write [T]");
-        Actions.can_read = true;
-        txt.focus();
+        debugger;
+        ScreenBlocks.txt.focus();
+        ScreenBlocks.box.setContent("{bold}Active:{/bold} Text write [T]");
         screen.render();
     });
 
     screen.key(['f', 'F', 'а', 'А'], function(ch, key) {
-        box.setContent("{bold}Active:{/bold} Friend list [F]");
-        FriendList.focus();
+        ScreenBlocks.box.setContent("{bold}Active:{/bold} Friend list [F]");
+        ScreenBlocks.FriendList.focus();
         screen.render();
     });
 
     screen.key(['r', 'R', 'к', 'К'], function(ch, key) {
-        box.setContent("{bold}Active:{/bold} Read message [R]");
-        msg.focus();
+        ScreenBlocks.box.setContent("{bold}Active:{/bold} Read message [R]");
+        ScreenBlocks.messages.focus();
         screen.render();
     });
 
 
 
-    // работа с полем ввода
-    txt.key(['escape'], function(ch, key) {
-        box.setContent("{bold}Active:{/bold} Friend list [F]");
+    /**
+     * работа с полем ввода
+     */
+    ScreenBlocks.txt.key(['escape'], function(ch, key) {
+        ScreenBlocks.FriendList.focus();
+        ScreenBlocks.box.setContent("{bold}Active:{/bold} Friend list [F]");
         screen.render();
     });
 
-    // ==========================
-    // отправка сообщения
-    txt.key(['C-c'], function() {
-        var t = txt.getValue();
 
-        txt.clearValue();
 
-        // Actions.send(t, message_id, msg, screen);
+    /**
+     * отправка сообщения
+     */
+    ScreenBlocks.txt.key(['C-c'], function() {
+        var textMsg = ScreenBlocks.txt.getValue();
 
-        // msg.add("{bold}{blue-bg}I'm:{/blue-bg}{/bold} " + t);
-        // msg.setScrollPerc(100);
+        Actions.send(textMsg, message_id);
+
+        // messages.add("{bold}{blue-bg}I'm:{/blue-bg}{/bold} " + t);
+        // messages.setScrollPerc(100);
         // screen.render();
     });
 
-    // ===========================
-    // получение списка диалогов
-    setTimeout(Actions.getDialogs, 5000);
 
-    // ===========================
-    // Выбор диалога для беседы
-    // ===========================
-    //
+    // ===================================
+    //  получение списка диалогов
+    Actions.getDialogs(settings.f_count);
+    //  обновление списка диалогов
+    setInterval(function() {
+        Actions.getDialogs(settings.f_count);
+    }, settings.freienListTimer);
 
+
+
+    /**
+     * Выбор диалога для беседы
+     */
+    ScreenBlocks.FriendList.on('select', function(index) {
+        // получение id mid текущей беседы, и запись этого значения в переменную
+        var id = Actions.getID(index.content);
+        message_id = id;
+
+        // отправляем запрос на соединение и получение последних сообщений
+        if (id) {
+            Actions.getHistory(id);
+        }
+    });
 
 
 
@@ -93,4 +116,3 @@ var openProgram = function() {
 
 // Start
 VK.checkToken(openProgram);
-
