@@ -19,7 +19,7 @@ var openProgram = function() {
     ScreenBlocks.messages = blessed.Box(settings.messages);
 
     // поле ввода
-    ScreenBlocks.txt = blessed.Textbox(settings.txt);
+    ScreenBlocks.txt = blessed.Textarea(settings.txt);
 
     ScreenBlocks.box = blessed.box(settings.box);
 
@@ -38,22 +38,33 @@ var openProgram = function() {
 
     screen.key(['t', 'T', 'е', 'Е'], function(ch, key) {
         ScreenBlocks.txt.focus();
+    });
+
+    screen.key(['f', 'F', 'а', 'А'], function(ch, key) {
+        ScreenBlocks.FriendList.focus();
+    });
+
+    screen.key(['r', 'R', 'к', 'К'], function(ch, key) {
+        ScreenBlocks.messages.focus();
+    });
+
+
+    // ******** focuses ********
+    ScreenBlocks.FriendList.on('focus', function() {
+        ScreenBlocks.box.setContent("{bold}Active:{/bold} Friend list [F]");
+        screen.render();
+    });
+
+    ScreenBlocks.txt.on('focus', function() {
         ScreenBlocks.box.setContent("{bold}Active:{/bold} Text write [T]");
         screen.render();
     });
 
-    screen.key(['f', 'F', 'а', 'А'], function(ch, key) {
-        ScreenBlocks.box.setContent("{bold}Active:{/bold} Friend list [F]");
-        ScreenBlocks.FriendList.focus();
-        screen.render();
-    });
-
-    screen.key(['r', 'R', 'к', 'К'], function(ch, key) {
+    ScreenBlocks.messages.on('focus', function() {
         ScreenBlocks.box.setContent("{bold}Active:{/bold} Read message [R]");
-        ScreenBlocks.messages.focus();
         screen.render();
     });
-
+    // ********
 
 
     /**
@@ -73,12 +84,28 @@ var openProgram = function() {
     ScreenBlocks.txt.key(['C-c'], function() {
         var textMsg = ScreenBlocks.txt.getValue();
 
-        Actions.send(textMsg, message_id);
+        Actions.send(textMsg);
 
         // messages.add("{bold}{blue-bg}I'm:{/blue-bg}{/bold} " + t);
         // messages.setScrollPerc(100);
         // screen.render();
     });
+
+
+
+    /**
+     * Выбор диалога для беседы
+     */
+    ScreenBlocks.FriendList.on('select', function(index) {
+        // получение id mid текущей беседы, и запись этого значения в переменную
+        var id = Actions.getID(index.content);
+
+        // отправляем запрос на соединение и получение последних сообщений
+        if (id) {
+            Actions.getHistory(id);
+        }
+    });
+
 
 
     // ===================================
@@ -90,22 +117,9 @@ var openProgram = function() {
     }, settings.freienListTimer);
 
 
-
-    /**
-     * Выбор диалога для беседы
-     */
-    ScreenBlocks.FriendList.on('select', function(index) {
-        // получение id mid текущей беседы, и запись этого значения в переменную
-        var id = Actions.getID(index.content);
-        message_id = id;
-
-        // отправляем запрос на соединение и получение последних сообщений
-        if (id) {
-            Actions.getHistory(id);
-        }
-    });
-
-
+    // ====================================
+    // Обновление сообщений
+    setInterval(Actions.getHistory, settings.messageTimer);
 
 };
 
