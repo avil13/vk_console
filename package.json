@@ -7,7 +7,6 @@
     "blessed": "*"
     },
   "devDependencies": {
-    "debug": "*"
     },
   "scripts": {
     "prepublish": "npm prune",
