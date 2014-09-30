@@ -1,26 +1,34 @@
-var scrn = {
-    txt: 1111
+var VK = require('VK');
+
+
+var app = function() {
+    VK.request('feed.get', {}, function(data) {
+        console.log('return: ', data);
+        //        process.exit();
+    });
 };
 
-var Actions = require('Actions')(scrn);
+
+
+VK.checkToken(app);
 
 
 
 // отобразить список друзей
-this.friends = function() {
+// this.friends = function() {
 
-    console.log(ScreenBlocks);
+// console.log(ScreenBlocks);
 
-    // vk.request('friends.get', {
-    //     fields: 'uid,first_name,last_name',
-    //     count: 2,
-    //     order: 'hints'
-    // }, function(data) {
-    //     //
-    //     console.log( data );
-    // });
+// vk.request('friends.get', {
+//     fields: 'uid,first_name,last_name',
+//     count: 2,
+//     order: 'hints'
+// }, function(data) {
+//     //
+//     console.log( data );
+// });
 
-};
+// };
 
 ////
 
