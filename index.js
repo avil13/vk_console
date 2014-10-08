@@ -61,6 +61,7 @@ var openProgram = function() {
     });
 
     ScreenBlocks.messages.on('focus', function() {
+        Actions.messageAsReadest();
         ScreenBlocks.box.setContent("{bold}Active:{/bold} Read message [R]");
         screen.render();
     });

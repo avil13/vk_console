@@ -10,7 +10,7 @@ var app = function() {
 
 
 
-VK.checkToken(app);
+// VK.checkToken(app);
 
 
 
