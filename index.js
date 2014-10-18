@@ -30,12 +30,6 @@ var openProgram = function() {
     var Actions = require('Actions')(ScreenBlocks);
 
 
-    // Quit on Escape
-    screen.key(['escape'], function(ch, key) {
-        return process.exit(0);
-    });
-
-
     screen.key(['t', 'T', 'е', 'Е'], function(ch, key) {
         ScreenBlocks.txt.focus();
     });
@@ -69,14 +63,25 @@ var openProgram = function() {
 
 
     /**
+     * выход
+     */
+    ScreenBlocks.FriendList.key(['escape'], function(ch, key) {
+        return process.exit(0);
+    });
+
+    /**
+     * работа с полем чтрения сообщений
+     */
+    ScreenBlocks.messages.key(['escape'], function(ch, key) {
+        ScreenBlocks.FriendList.focus();
+    });
+
+    /**
      * работа с полем ввода
      */
     ScreenBlocks.txt.key(['escape'], function(ch, key) {
         ScreenBlocks.FriendList.focus();
-        ScreenBlocks.box.setContent("{bold}Active:{/bold} Friend list [F]");
-        screen.render();
     });
-
 
 
     /**
@@ -108,19 +113,29 @@ var openProgram = function() {
     });
 
 
+    /**
+     * Обновление списков сообщений и истории
+     */
+    var updateLists = function() {
+        //  получение списка диалогов
+        Actions.getDialogs();
+        //  получение списка истории
+        Actions.getHistory();
+    };
 
-    // ===================================
-    //  получение списка диалогов
-    Actions.getDialogs(settings.f_count);
-    //  обновление списка диалогов
+    updateLists();
+    setTimeout(updateLists, 1000); // для обновления имен в списке
+
+    /**
+     * Запуск обновления списков
+     * проверяется количкство не прочитанных сообщений,
+     * если оно изменилось, то обновляем списки
+     */
     setInterval(function() {
-        Actions.getDialogs(settings.f_count);
-    }, settings.freienListTimer);
+        Actions.unreadCount(updateLists);
+    }, settings.listTimer);
 
 
-    // ====================================
-    // Обновление сообщений
-    setInterval(Actions.getHistory, settings.messageTimer);
 
 };
 
