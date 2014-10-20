@@ -4,7 +4,8 @@
   "description": "'Pacaje what can read and post message from vk.com'",
   "main": "index.js",
   "dependencies": {
-    "blessed": "*"
+    "blessed": "*",
+    "exec": "*"
     },
   "devDependencies": {
     },

@@ -2,6 +2,7 @@
 
 node_modules/debug/
 node_modules/blessed/
+node_modules/exec/
 node_modules/.bin/
 
 token.json
