@@ -56,6 +56,7 @@ var openProgram = function() {
 
     ScreenBlocks.messages.on('focus', function() {
         Actions.messageAsReadest();
+        Actions.getHistory();
         ScreenBlocks.box.setContent("{bold}Active:{/bold} Read message [R]");
         screen.render();
     });
@@ -115,9 +116,9 @@ var openProgram = function() {
      * Обновление списков сообщений и истории
      */
     var updateLists = function() {
-        //  получение списка диалогов
+        //  получение списка диалогов слева
         Actions.getDialogs();
-        //  получение списка истории
+        //  получение списка истории выбранного диалога
         Actions.getHistory();
     };
 

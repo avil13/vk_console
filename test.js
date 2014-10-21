@@ -1,3 +1,4 @@
+/*
 var VK = require('VK');
 
 
@@ -7,6 +8,11 @@ var app = function() {
         //        process.exit();
     });
 };
+*/
+
+setTimeout(function(){
+    debugger;
+}, 5000);
 
 
 
