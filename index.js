@@ -2,7 +2,7 @@ var VK = require('VK');
 
 /**
  *   функция в которой происходит основаная работа программы
- *   вызывается полсе того как будет проверен товен
+ *   вызывается полсе того как будет проверен токен
  */
 var openProgram = function() {
 
@@ -89,9 +89,7 @@ var openProgram = function() {
      */
     ScreenBlocks.txt.key(['C-c'], function() {
         var textMsg = ScreenBlocks.txt.getValue();
-
         Actions.send(textMsg);
-
         // messages.add("{bold}{blue-bg}I'm:{/blue-bg}{/bold} " + t);
         // messages.setScrollPerc(100);
         // screen.render();
@@ -135,8 +133,6 @@ var openProgram = function() {
     setInterval(function() {
         Actions.unreadCount(updateLists);
     }, settings.listTimer);
-
-
 
 };
 
