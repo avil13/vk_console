@@ -5,18 +5,18 @@
   "main": "index.js",
   "dependencies": {
     "blessed": "*",
-    "exec": "*"
-    },
-  "devDependencies": {
-    },
+    "exec": "*",
+    "node-notifier": "~4.0.2"
+  },
+  "devDependencies": {},
   "scripts": {
     "prepublish": "npm prune",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-        "type": "git",
-        "url": "https://github.com/avil13/vk_console"
-    },
+    "type": "git",
+    "url": "https://github.com/avil13/vk_console"
+  },
   "keywords": [
     "vk.com"
   ],

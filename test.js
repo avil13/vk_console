@@ -10,11 +10,6 @@ var app = function() {
 };
 */
 
-setTimeout(function(){
-    debugger;
-}, 5000);
-
-
 
 // VK.checkToken(app);
 
