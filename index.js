@@ -132,8 +132,21 @@ var openProgram = function() {
      * если оно изменилось, то обновляем списки
      */
     setInterval(function() {
-        Actions.unreadCount(updateLists);
+        // Actions.unreadCount(updateLists);
+        Actions.unreadCount(
+            Actions.getHistory, //  получение списка истории выбранного диалога
+            Actions.getDialogs //  получение списка диалогов слева
+        );
     }, settings.listTimer);
+
+    /**
+     * Прверка на online друзей
+     */
+    setInterval(function() {
+        Actions.online();
+    }, settings.checkOnline);
+
+
 
 };
 
