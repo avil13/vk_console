@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "blessed": "*",
+    "cli-color": "^0.3.2",
     "exec": "*",
     "node-notifier": "^4.1.0",
     "open": "0.0.5"
