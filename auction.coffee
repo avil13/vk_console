@@ -102,7 +102,7 @@ addComment = (text)->
     VK.request 'wall.addComment', bet, (data)->
         min = int bet.text
         if data && data.response && data.response.cid
-            console.log clc.green "Ваша ставка: #{text}"
+            console.log clc.green "Предыдущая ставка: #{text}"
         else
             console.log clc.red "Не удалось установить ставку: #{text}"
 
