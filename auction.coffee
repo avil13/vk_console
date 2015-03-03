@@ -1,6 +1,7 @@
 ###
 coffee auction.coffee gr=10182695 post=64293 max=650 time=00:01
 coffee auction.coffee max=650 time=00:01 url=http://vk.com/club9488175?w=wall-9488175_24%2Fall
+coffee auction.coffee max=100 gr=8679781 post=56601
 ###
 
 VK = require 'VK'
@@ -14,6 +15,7 @@ lostIsMy = false
 # ставка ниже которой не опускаться
 min = 1
 # Время после которого остановиться
+doTime = false
 stopTime =
     hour: 0
     minute: 1
@@ -23,6 +25,7 @@ stopTime =
 
 # проверка времени аукциона
 _checkTime = ->
+    return false if doTime == false
     d = new Date()
     return (do d.getHours >= stopTime.hour && do d.getMinutes >=  stopTime.minute && do d.getDate >= stopTime.data)
 
@@ -44,6 +47,7 @@ _parseUrl = (url)->
 
 _getTime = (str)->
     t = str.split ':'
+    if t.length == 2 then doTime = true
     stopTime.hour = int t[0]
     stopTime.minute = int t[1]
 
