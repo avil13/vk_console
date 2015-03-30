@@ -4,8 +4,17 @@
 
 vk = require 'VK'
 clc = require 'cli-color'
-myID =  require 'token'
+token =  require 'token'
 
+
+###
+#  объект запроса к серверу
+###
+reqObj =
+    user_id: token.w_u || 1 # пользователь за которым следим
+    list_id: 1
+    online_mobile: 0
+    version: 5.29
 
 sqlite3 = require('sqlite3').verbose()
 db = new sqlite3.Database('mydb.db')
@@ -43,15 +52,6 @@ doRating = (fr_id)->
         else
             upRating(fr_id, int(row.rating)+1)
 
-
-###
-#  объект запроса к серверу
-###
-reqObj =
-    user_id: 1
-    list_id: 1
-    online_mobile: 0
-    version: 5.29
 ###
 # пользователь онлайн
 ###
