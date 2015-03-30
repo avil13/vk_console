@@ -1,0 +1,12 @@
+doctype html
+html
+    head
+        title Спискок популярных друзей
+        link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
+    body
+        div.container
+            div.list-group.col-xs-6.col-xs-offset-3
+                    each fr in friends
+                        a(href="http://vk.com/id#{fr.friend}", class="list-group-item", target="_blank")!= fr.name
+                            span.badge!= fr.rating
+
