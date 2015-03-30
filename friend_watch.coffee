@@ -89,5 +89,6 @@ ActionRequest = ->
 do isOnline
 do ActionRequest
 t = 5*60*1000 # время обновления
+setTimeout(ActionRequest, 20*1000)
 setInterval(ActionRequest, t)
 setInterval(isOnline, 30*1000)
