@@ -52,20 +52,39 @@ reqObj =
     list_id: 1
     online_mobile: 0
     version: 5.29
+###
+# пользователь онлайн
+###
+online = null
+###
+# проверка статуса пользователя
+###
+isOnline = ->
+    vk.request 'friends.getOnline', {version: 5.28}, (data)->
+        status = (data && data.response && (data.response.indexOf(reqObj.user_id) > -1))
+        if status != online
+            console.log(clc.yellow('Online status:', status, '\t| ', new Date))
+        online = status
 
+###
+# функция медиатор
+###
 ActionRequest = ->
-    vk.request 'friends.getOnline', reqObj, (data)->
-             if data && data.response && data.response.length
-                 console.log(clc.green(new Date,'  Ok users count:', data.response.length))
-                 doRating(fr_id) for fr_id in data.response
-             else
-                console.log(clc.red(new Date,'  Error response'))
-    , (err)->
-            console.log(clc.red(new Date,'  Error request'))
-            do ActionRequest
+    if online
+        vk.request 'friends.getOnline', reqObj, (data)->
+                 if data && data.response && data.response.length
+                     console.log(clc.green(new Date,'  Ok users count:', data.response.length))
+                     doRating(fr_id) for fr_id in data.response
+                 else
+                    console.log(clc.red('Error response\t| ', new Date))
+        , (err)->
+                console.log(clc.red('Error request\t| ', new Date))
+                do ActionRequest
 
 
 
+do isOnline
 do ActionRequest
 t = 5*60*1000 # время обновления
 setInterval(ActionRequest, t)
+setInterval(isOnline, 30*1000)
