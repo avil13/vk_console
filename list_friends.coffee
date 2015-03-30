@@ -1,5 +1,6 @@
 open = require('open')
 vk = require 'VK'
+token = require('token')
 express = require('express')
 app = express()
 friends = []
@@ -14,11 +15,22 @@ db.each "SELECT user, friend, rating FROM user_friend ORDER BY rating DESC", (er
     ids.push(row.friend)
     #
 friendName = ->
-    vk.request 'users.get', {user_ids: ids.join(','), fields:'verifieds', name_case:'Nom', v:5.8}, (data)->
+    obj =
+        user_ids: ids.join(',')
+        # fields:'photo_50'
+        name_case: 'Nom'
+        v:5.29
+    vk.request 'users.get', obj, (data)->
                 fr = {}
                 if data && data.response
-                    for v in data.response then fr[v.id] = "#{v.first_name} #{v.last_name}"
-                    for f, i in friends then friends[i]['name'] = fr[f.friend]
+                    for v in data.response
+                        fr[v.id] =
+                            name: "#{v.first_name} #{v.last_name}"
+                            # photo: v.photo_50
+                    for f, i in friends
+                        friends[i]['name'] = fr[f.friend].name
+                    #     friends[i]['photo'] = fr[f.friend].photo
+
 # # #
 
 action = ->
@@ -36,5 +48,5 @@ action = ->
         console.log('app listening at http://%s:%s', host, port)
         open("http:/#{host}:#{port}")
 
-setTimeout friendName, 1000
-setTimeout action, 3000
+setTimeout friendName, 500
+setTimeout action, 2000
