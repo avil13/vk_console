@@ -16,6 +16,9 @@ reqObj =
     online_mobile: 0
     version: 5.29
 
+console.log(clc.blue.bgGreen('Watch for user:', reqObj.user_id))
+
+
 sqlite3 = require('sqlite3').verbose()
 db = new sqlite3.Database('mydb.db')
 db.run("CREATE TABLE if not exists user_friend (user INT, friend INT, rating INT)")
@@ -73,8 +76,8 @@ ActionRequest = ->
     if online
         vk.request 'friends.getOnline', reqObj, (data)->
                  if data && data.response && data.response.length
-                     console.log(clc.green(new Date,'  Ok users count:', data.response.length))
-                     doRating(fr_id) for fr_id in data.response
+                    console.log(clc.green(new Date,'  Ok users count:', data.response.length))
+                    doRating(fr_id) for fr_id in data.response
                  else
                     console.log(clc.red('Error response\t| ', new Date))
         , (err)->
