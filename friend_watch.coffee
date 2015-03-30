@@ -16,7 +16,7 @@ reqObj =
     online_mobile: 0
     version: 5.29
 
-console.log(clc.blue.bgGreen('Watch for user:', reqObj.user_id))
+console.log(clc.blue.bgGreen.bold('   Watch for user:', reqObj.user_id, '   '))
 
 
 sqlite3 = require('sqlite3').verbose()
