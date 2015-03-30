@@ -40,7 +40,7 @@ _date = (date)->
     do d.getHours + ':' + do d.getMinutes + '  ' + do d.getDate + '.' + (1 + do d.getMonth) + '.' + do d.getFullYear
 
 _parseUrl = (url)->
-    myRe = /-(\d+)_(\d+)/g
+    myRe = /wall-(\d+)_(\d+)/g
     myArray = myRe.exec(url)
     options.gr = myArray[1]
     options.post = myArray[2]

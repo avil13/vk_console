@@ -8,4 +8,4 @@ token.json
 .idea/
 .directory
 .DS_Store
-Thumbs.db
+*db.db*

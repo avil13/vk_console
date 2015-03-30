@@ -8,9 +8,11 @@
     "cli-color": "^0.3.2",
     "exec": "*",
     "node-notifier": "^4.1.0",
-    "open": "0.0.5"
+    "open": "0.0.5",
+    "sqlite3": "^3.0.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "scripts": {
     "prepublish": "npm prune",
     "test": "echo \"Error: no test specified\" && exit 1"
