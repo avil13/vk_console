@@ -22,7 +22,26 @@ console.log(clc.blue.bgGreen.bold('   Watch for user:', reqObj.user_id, '   '))
 sqlite3 = require('sqlite3').verbose()
 db = new sqlite3.Database('mydb.db')
 db.run("CREATE TABLE if not exists user_friend (user INT, friend INT, rating INT)")
+db.run("CREATE TABLE if not exists log (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+                                        `user` INT,
+                                        `message` TEXT,
+                                        `status` TEXT,
+                                        `date` TEXT)")
 
+###
+# Логирование
+###
+log = (msg, status)->
+    color =
+        ok: 'green'
+        err: 'red'
+        warning: 'yellow'
+    date = new Date
+    console.log(clc[color[status]](msg,  "\t | ", date))
+    db.run(
+            "INSERT INTO log (user, message, status, date) VALUES (?, ?, ?, ?)",
+            [reqObj.user_id, msg, status, date]
+        )
 
 ###
 #  строка в число
@@ -66,7 +85,7 @@ isOnline = ->
     vk.request 'friends.getOnline', {version: 5.28}, (data)->
         status = (data && data.response && (data.response.indexOf(reqObj.user_id) > -1))
         if status != online
-            console.log(clc.yellow('Online status:', status, '\t| ', new Date))
+            log("Online status: #{if status then 'true' else 'false'}", 'warning')
         online = status
 
 ###
@@ -76,19 +95,19 @@ ActionRequest = ->
     if online
         vk.request 'friends.getOnline', reqObj, (data)->
                  if data && data.response && data.response.length
-                    console.log(clc.green(new Date,'  Ok users count:', data.response.length))
+                    log("Ok, users count: #{data.response.length}", 'ok')
                     doRating(fr_id) for fr_id in data.response
                  else
-                    console.log(clc.red('Error response\t| ', new Date))
+                    log('Error response', 'err')
         , (err)->
-                console.log(clc.red('Error request\t| ', new Date))
+                log('Error request', 'err')
                 do ActionRequest
 
 
-
+# # # # #
 do isOnline
 do ActionRequest
 t = 5*60*1000 # время обновления
-setTimeout(ActionRequest, 20*1000)
+setTimeout(ActionRequest, 10*1000)
 setInterval(ActionRequest, t)
 setInterval(isOnline, 30*1000)

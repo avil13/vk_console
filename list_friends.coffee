@@ -46,7 +46,7 @@ action = ->
         host = server.address().address
         port = server.address().port
         console.log('app listening at http://%s:%s', host, port)
-        open("http:/#{host}:#{port}")
+        open("http://#{host}:#{port}")
 
 setTimeout friendName, 500
 setTimeout action, 2000
