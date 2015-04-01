@@ -1,16 +1,19 @@
 doctype html
-html
+html(ng-app="APP")
     head
         title Спискок популярных друзей
         link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
+        link(rel="stylesheet" href="/css/style.css")
+        script(src="/js/script.js")
         style.
             body{
                 padding: 24px 0;
             }
     body
-        div.container
-            div.list-group.col-xs-4.col-xs-offset-4
-                    each fr in friends
-                        a(href="http://vk.com/id#{fr.friend}", class="list-group-item", target="_blank")!= fr.name
-                            span.badge!= fr.rating
+        div.container(ng-controller="MainCtrl")
+            div.block.col-xs-4
+                div.list-group
+                    a(ng-repeat="fr in friends", href="http://vk.com/id{{fr.friend}}", class="list-group-item", target="_blank") {{fr.name}}
+                        span.badge {{fr.rating}}
+            div.col-xs-7.pull-right.well.
 

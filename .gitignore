@@ -4,6 +4,7 @@ node_modules/*
 !node_modules/Actions.js
 !node_modules/VK.js
 
+views/public/*
 token.json
 .idea/
 .directory

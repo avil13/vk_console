@@ -2,6 +2,7 @@ open = require('open')
 vk = require 'VK'
 token = require('token')
 express = require('express')
+clc = require 'cli-color'
 app = express()
 friends = []
 ids = []
@@ -33,20 +34,31 @@ friendName = ->
 
 # # #
 
-action = ->
+runServer = ->
     app.set('views', './views')
     app.set('view engine', 'jade')
+    app.use '/css/', express.static(__dirname + '/views/public/css/')
+    app.use '/js', express.static(__dirname + '/views/public/js/')
+    app.use '/maps', express.static(__dirname + '/views/public/maps/')
 
-    app.get '/', (req, res)->
-        # res.send('hello world')
-        res.render 'index', {friends: friends}
+    app.post '/api/:action/:date1?/:date2?', (req, res)->
+        result = {}
+        actions =
+            friends: ->
+                result.content = friends
 
+        if actions[req.params.action] then do actions[req.params.action]
+        # console.log req.para
+        res.json result
+
+
+    app.get '/', (req, res)-> res.render 'index', {friends: []}
 
     server = app.listen 3000, ->
         host = server.address().address
         port = server.address().port
-        console.log('app listening at http://%s:%s', host, port)
-        open("http://#{host}:#{port}")
+        clc.green("app listening at http://#{host}:#{port}")
+        # open("http://#{host}:#{port}")
 
-setTimeout friendName, 500
-setTimeout action, 2000
+setTimeout friendName, 400
+setTimeout runServer, 1000

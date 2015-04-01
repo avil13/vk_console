@@ -1,0 +1,5 @@
+.block{
+    padding: 0;
+    height: 90vh;
+    overflow-y: auto;
+}
