@@ -58,7 +58,7 @@ runServer = ->
         host = server.address().address
         port = server.address().port
         clc.green("app listening at http://#{host}:#{port}")
-        # open("http://#{host}:#{port}")
+        open("http://#{host}:#{port}")
 
 setTimeout friendName, 400
 setTimeout runServer, 1000
