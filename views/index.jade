@@ -12,8 +12,10 @@ html(ng-app="APP")
     body
         div.container(ng-controller="MainCtrl")
             div.block.col-xs-4
+                div.form-group
+                    input(type="text" ng-model="searchText" class="form-control")
                 div.list-group
-                    a(ng-repeat="fr in friends", href="http://vk.com/id{{fr.friend}}", class="list-group-item", target="_blank") {{fr.name}}
+                    a(ng-repeat="fr in friends|filter:searchText", href="http://vk.com/id{{fr.friend}}", class="list-group-item", target="_blank") {{fr.name}}
                         span.badge {{fr.rating}}
             div.col-xs-7.pull-right.well.
 
