@@ -15,10 +15,10 @@ db.each "SELECT user, friend, rating FROM user_friend ORDER BY rating DESC", (er
     friends.push(row)
     ids.push(row.friend)
     #
-friendName = ->
+friendName = (user_ids)->
     obj =
-        user_ids: ids.join(',')
-        # fields:'photo_50'
+        user_ids: user_ids.join(',')
+        fields:'photo_50'
         name_case: 'Nom'
         v:5.29
     vk.request 'users.get', obj, (data)->
@@ -27,10 +27,19 @@ friendName = ->
                     for v in data.response
                         fr[v.id] =
                             name: "#{v.first_name} #{v.last_name}"
-                            # photo: v.photo_50
+                            photo: v.photo_50
                     for f, i in friends
-                        friends[i]['name'] = fr[f.friend].name
-                    #     friends[i]['photo'] = fr[f.friend].photo
+                        friends[i]['name'] = fr[f.friend].name if fr[f.friend]
+                        friends[i]['photo'] = fr[f.friend].photo if fr[f.friend]
+
+# # #
+
+getFriendName = ->
+    len = Math.ceil(ids.length / 3)
+    i = 0
+    while i < 3
+        friendName(ids.slice((i*len), (++i*len)))
+
 
 # # #
 
@@ -44,11 +53,12 @@ runServer = ->
     app.post '/api/:action/:date1?/:date2?', (req, res)->
         result = {}
         actions =
-            friends: ->
-                result.content = friends
+            friends: -> result.content = friends
+            is_runing: -> result.status = true
+
 
         if actions[req.params.action] then do actions[req.params.action]
-        # console.log req.para
+        # console.log req.params
         res.json result
 
 
@@ -57,8 +67,8 @@ runServer = ->
     server = app.listen 3000, ->
         host = server.address().address
         port = server.address().port
-        clc.green("app listening at http://#{host}:#{port}")
+        console.log(clc.green("app listening at http://#{host}:#{port}"))
         open("http://#{host}:#{port}")
 
-setTimeout friendName, 400
-setTimeout runServer, 1000
+setTimeout getFriendName, 300
+setTimeout runServer, 900

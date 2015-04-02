@@ -1,20 +1,27 @@
 APP = angular.module 'APP', ['chart.js']
 
-APP.controller 'MainCtrl', ['$scope', '$http', ($scope, $http)->
-    post = (url, data, callback)->
+APP.controller 'MainCtrl', ['$scope', '$http', '$window', ($scope, $http, $window)->
+    Post = (url, data, callback, err)->
         if !callback && data instanceof Function
             callback = data
             data = {}
         $http.post(url, data)
             .success (data)->
                 callback data if callback
-            .error (console.log)
-        return
-
+            .error (data, status)->
+                if err instanceof Function then err(data, status)
     #
-    post '/api/friends/', (data)->
+    Post '/api/friends/', (data)->
         $scope.friends = data.content if data.content
-
+    #
+    isRun = ->
+        Post '/api/is_runing', {}
+        , (data)->
+            if data.status != true then do $window.close
+        , (data, status)->
+            if data == null && !status then do $window.close
+    #
+    setInterval isRun, 4000
     #
     return
 ]
