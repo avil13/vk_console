@@ -10,3 +10,5 @@ token.json
 .directory
 .DS_Store
 *db.db*
+*.map
+*.log
