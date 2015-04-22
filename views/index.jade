@@ -1,23 +1,10 @@
 doctype html
 html(ng-app="APP")
-    head
-        title Спискок популярных друзей
-        link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
-        link(rel="stylesheet" href="/css/style.css")
-        script(src="/js/script.js")
-        style.
-            body{
-                padding: 24px 0;
-            }
+    include includes/head
     body
         div.container(ng-controller="MainCtrl")
             div.col-xs-4
-                div.form-group
-                    input(type="text" ng-model="searchText" class="form-control")
-                div.list-group.block
-                    a(ng-repeat="fr in friends|filter:searchText", href="http://vk.com/id{{fr.friend}}", class="list-group-item", target="_blank") {{fr.name}}
-                        img.img-thumbnail.pull-right(src="{{fr.photo}}")
-                        span.badge {{fr.rating}}
-                        div.clearfix
-            div.col-xs-7.pull-right.well.
+                include includes/popular_friends
+            div.col-xs-7.pull-right
+                include includes/photo_serach
 

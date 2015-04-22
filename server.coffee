@@ -7,6 +7,11 @@ app = express()
 friends = []
 ids = []
 
+
+# Список аргументов
+arg = process.argv.slice 2
+
+
 #
 sqlite3 = require('sqlite3').verbose()
 db = new sqlite3.Database('mydb.db')
@@ -46,20 +51,25 @@ getFriendName = ->
 runServer = ->
     app.set('views', './views')
     app.set('view engine', 'jade')
+    app.use '/template', express.static(__dirname + '/views/public/template/')
     app.use '/css/', express.static(__dirname + '/views/public/css/')
     app.use '/js', express.static(__dirname + '/views/public/js/')
     app.use '/maps', express.static(__dirname + '/views/public/maps/')
 
     app.post '/api/:action/:date1?/:date2?', (req, res)->
         result = {}
+        # список API методов для работы
         actions =
-            friends: -> result.content = friends
-            is_runing: -> result.status = true
+            friends: ->
+                result.content = friends
+                res.json result
+            is_runing: ->
+                result.status = true
+                res.json result
 
-
+        # выполняем экшен
         if actions[req.params.action] then do actions[req.params.action]
         # console.log req.params
-        res.json result
 
 
     app.get '/', (req, res)-> res.render 'index', {friends: []}
@@ -68,7 +78,17 @@ runServer = ->
         host = server.address().address
         port = server.address().port
         console.log(clc.green("app listening at http://#{host}:#{port}"))
-        open("http://#{host}:#{port}")
+        # если передан параметр single то не открываем окно в браузере
+        if !(arg.indexOf('single') > -1) then open("http://#{host}:#{port}")
+
+
+
+###
+# поиск фото
+###
+
+
 
 setTimeout getFriendName, 300
 setTimeout runServer, 900
+
