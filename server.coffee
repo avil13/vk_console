@@ -46,6 +46,7 @@ getFriendName = ->
         friendName(ids.slice((i*len), (++i*len)))
 
 
+
 # # #
 
 runServer = ->
@@ -56,7 +57,7 @@ runServer = ->
     app.use '/js', express.static(__dirname + '/views/public/js/')
     app.use '/maps', express.static(__dirname + '/views/public/maps/')
 
-    app.post '/api/:action/:date1?/:date2?', (req, res)->
+    app.post '/api/:action/:opt1?/:opt2??/:opt3?/:opt4?/:opt5?/:opt6?', (req, res)->
         result = {}
         # список API методов для работы
         actions =
@@ -66,6 +67,16 @@ runServer = ->
             is_runing: ->
                 result.status = true
                 res.json result
+            photos_search: ->
+                obj =
+                    lat: req.params.opt1
+                    long: req.params.opt2
+                    count: 100
+                    radius: req.params.opt3 || 800
+                    start_time: req.params.opt4  || parseInt((new Date().getTime())/1000) - 3600
+                    end_time: req.params.opt5 || parseInt((new Date().getTime())/1000)
+                    offset: req.params.opt6 || 0
+                vk.request 'photos.search', obj, (data)-> res.json data
 
         # выполняем экшен
         if actions[req.params.action] then do actions[req.params.action]

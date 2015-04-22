@@ -20,7 +20,7 @@ APP.controller 'MainCtrl', ['$scope', '$http', '$window', ($scope, $http, $windo
         , (data, status)->
             # if data == null && !status then do $window.close
     #
-    setInterval isRun, 4000
+    setInterval isRun, 5000
     #
 
 
