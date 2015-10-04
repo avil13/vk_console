@@ -1,0 +1,9 @@
+ya-map(coordinate="coordinate")
+
+div.form-group
+    input(type="text" ng-model="searchText" class="form-control")
+div.list-group.block
+    a(ng-repeat="fr in friends|filter:searchText", href="http://vk.com/id{{fr.friend}}", class="list-group-item", target="_blank") {{fr.name}}
+        img.img-thumbnail.pull-right(src="{{fr.photo}}")
+        span.badge {{fr.rating}}
+        div.clearfix

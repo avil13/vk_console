@@ -21,8 +21,8 @@ var coffeFiles = [
     './views/public/bwr/angular/angular.js',
     './views/public/bwr/Chart.js/Chart.js',
     './views/public/bwr/angular-chart.js/angular-chart.js',
-    './views/src/app.coffee'
-
+    './views/src/app.coffee',
+    './views/src/app-controller.coffee'
 ];
 
 // coffescript ==============================================
