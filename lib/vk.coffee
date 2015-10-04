@@ -103,6 +103,7 @@ request: (_method, _params, _callback, _err)->
 
     for own key, val of _params
         options.path += "&#{key}=#{if key == "message" then encodeURIComponent(val) else val}"
+    if !_params['v'] then options.path += "&v=5.14"
 
     req = https.request options, (res)->
         str = ''
@@ -120,6 +121,19 @@ request: (_method, _params, _callback, _err)->
         res.on 'error', (err)->
             if _err then _err err
     req.end()
+
+module.exports = VK
+
+# VK.checkToken();
+
+# VK.request('messages.getHistory', {
+#     count: 20,
+#     v: 5.24,
+#     user_id: 56032614 // пользователь с которым мы переписываемся
+# }, function(data) {
+#     console.log('return: ', data);
+#     //        process.exit();
+# });
 
 
 
