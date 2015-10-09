@@ -1,16 +1,45 @@
+vk = require('./vk.coffee')
+settings = require('./screen_settings.coffee')()
+h = require './helper.coffee'
+
+
 module.exports = (ScreenBlocks)->
-
-    vk = require('./vk.coffee')
-    settings = require('./screen_settings.coffee')()
-    os = require('os')
-    exec = require('exec')
-    notifier = require('node-notifier')
-
-    vk.checkToken()
+    vk.checkToken() # проверяем токен
 
     message_id = 0 #// переменная для хранения ID беседы
     can_read = false #// Разрешение на отметку сообщений как прочитанных
     count_unread_msg = 0 #// количество не прочтенных сообщений
 
+    messages = (str = [])->
+        if typeof str == 'object'
+            str = JSON.parse str
+        ScreenBlocks.messages.setContent(str)
+        ScreenBlocks.messages.parent.render()
+    friendList = (arr)->
+        ScreenBlocks.FriendList.setItems([])
+        for v in arr then ScreenBlocks.FriendList.add(v)
+        ScreenBlocks.FriendList.parent.render()
 
-    @unreadCount
+    do ->
+        # Список сообщений включая беседы
+        getDialogs: (offset = 0)->
+            options =
+                offset: offset
+                preview_length: 10
+                count: settings.f_count
+            vk.request 'messages.getDialogs', options, (obj)->
+                console.log obj
+                if obj && obj.obj.response
+                    list = h.friendList(obj.response)
+                    console.log(list)
+                    # friendList(list)
+                else
+                    friendList(['Error...'])
+
+
+        # получение беседы
+
+        # отправка сообщений
+
+        #
+        #

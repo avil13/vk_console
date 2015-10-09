@@ -1,6 +1,5 @@
 module.exports = (screen)->
-
-    return {
+    {
         FriendList:
             parent: screen
             alwaysScroll: false
@@ -93,5 +92,7 @@ module.exports = (screen)->
         f_count: 25 #// Количество диалогов слева
         history_count: 25
         checkOnline: 60 * 1000 #// периоды между проверками online
+
+        message_title: 'Новое сообщение'
     }
 

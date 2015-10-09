@@ -1,14 +1,12 @@
 https = require('https')
 open = require('open')
 fs = require('fs')
+clc = require('cli-color')
 token = false
 user_id = false
 
 # color
-green = '\033[0;32m'
-red = '\033[0;31m'
-end = '\033[0m'
-log = (msg, error=false)-> console.log (error ? red : green) + "\n" + msg + "\n" + end
+log = (msg, error=false)-> console.log (if error then  clc.red("\n#{msg}\n") else clc.green("\n#{msg}\n"))
 
 VK =
 # Проверка токена на действительность
@@ -21,24 +19,25 @@ _httpCheckToken: (_callback)->
 
     req = https.get options, (res)->
         str = ''
-        req = http.get url, (res)->
-            res.setEncoding('utf8')
-            res.on 'data', (chunk)->
-                str += chunk
-            res.on 'end', ->
-                try str = JSON.parse(str)
-                catch e then return log e, 1
-                fs.writeFile "#{__dirname}/token.json", '{}', (err)-> log err, 1
-                _callback(obj)
-                if !(str && str.response)
-                    token = user_id = false
-                    fs.writeFile "#{__dirname}/token.json", '{}', (err)->
-                        log err, 1 if err
-                        log "Ошибка при проверке токена\nпопробуйте еще раз", 1
-                        process.exit()
-            res.on 'error', (err)->
-                log "Ошибка при запросе проверки токена", 1
-                log err, 1
+        res.setEncoding('utf8')
+        res.on 'data', (chunk)->
+            str += chunk
+        res.on 'end', ->
+            try str = JSON.parse(str)
+            catch e
+                log e, 1
+                fs.writeFileSync "#{__dirname}/token.json", '{}', (err)-> log err, 1
+            if !(str && str.response)
+                token = user_id = false
+                fs.writeFileSync "#{__dirname}/token.json", '{}', (err)->
+                    log err, 1 if err
+                    log "Ошибка при проверке токена\nпопробуйте еще раз", 1
+                    process.exit()
+            else
+                do _callback?
+        res.on 'error', (err)->
+            log "Ошибка при запросе проверки токена", 1
+            log err, 1
     req.end()
 
 
@@ -103,21 +102,19 @@ request: (_method, _params, _callback, _err)->
 
     for own key, val of _params
         options.path += "&#{key}=#{if key == "message" then encodeURIComponent(val) else val}"
-    if !_params['v'] then options.path += "&v=5.14"
+    if !_params['v'] then options.path += "&v=5.37"
 
     req = https.request options, (res)->
         str = ''
         res.setEncoding('utf8')
         res.on 'data', (chunk)-> str += chunk
-
         res.on 'end', (err)->
             if err then return log(err, 1)
             try
-                ans = JSON.parse(ans);
-                if _callback then _callback(ans)
+                ans = JSON.parse(str)
+                _callback? ans, str
             catch e
                 log(e, 1)
-                return false
         res.on 'error', (err)->
             if _err then _err err
     req.end()
@@ -134,10 +131,4 @@ module.exports = VK
 #     console.log('return: ', data);
 #     //        process.exit();
 # });
-
-
-
-
-
-
 
