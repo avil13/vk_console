@@ -28,11 +28,9 @@ module.exports = (ScreenBlocks)->
                 preview_length: 10
                 count: settings.f_count
             vk.request 'messages.getDialogs', options, (obj)->
-                console.log obj
-                if obj && obj.obj.response
-                    list = h.friendList(obj.response)
-                    console.log(list)
-                    # friendList(list)
+                if obj
+                    list = h.friendList(obj)
+                    friendList(list)
                 else
                     friendList(['Error...'])
 

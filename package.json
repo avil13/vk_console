@@ -16,7 +16,7 @@
   "scripts": {
     "postinstall": "",
     "deps": "",
-    "v2": "node v2.js"
+    "vk": "node v2.js"
   },
   "repository": {
     "type": "git",

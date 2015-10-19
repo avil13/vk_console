@@ -34,7 +34,7 @@ _httpCheckToken: (_callback)->
                     log "Ошибка при проверке токена\nпопробуйте еще раз", 1
                     process.exit()
             else
-                do _callback?
+                if typeof _callback == 'function' then do _callback
         res.on 'error', (err)->
             log "Ошибка при запросе проверки токена", 1
             log err, 1
@@ -112,7 +112,8 @@ request: (_method, _params, _callback, _err)->
             if err then return log(err, 1)
             try
                 ans = JSON.parse(str)
-                _callback? ans, str
+                response = ans.response
+                _callback? response, ans, str
             catch e
                 log(e, 1)
         res.on 'error', (err)->
