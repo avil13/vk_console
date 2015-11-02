@@ -120,16 +120,8 @@ request: (_method, _params, _callback, _err)->
             if _err then _err err
     req.end()
 
+
+
+# # # # #
 module.exports = VK
-
-# VK.checkToken();
-
-# VK.request('messages.getHistory', {
-#     count: 20,
-#     v: 5.24,
-#     user_id: 56032614 // пользователь с которым мы переписываемся
-# }, function(data) {
-#     console.log('return: ', data);
-#     //        process.exit();
-# });
 
