@@ -15,7 +15,9 @@ ScreenBlocks =
         parent:
             render: ->
 
-vk.checkToken ->
-    Actions = require('./actions.coffee')(ScreenBlocks)
+# Actions = require('./actions.coffee')(ScreenBlocks)
 
-    Actions.getDialogs()
+
+# # # # # #
+
+vk.checkToken (data)-> console.log "OK!! ==> #{data}"

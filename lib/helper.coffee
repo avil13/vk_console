@@ -3,7 +3,6 @@ vk = require('./vk.coffee')
 friend_name = {}
 empty_ids = []
 
-
 module.exports = do ->
 
 
@@ -44,3 +43,10 @@ module.exports = do ->
                     if m.read_state == 1 then str = "{red-fg}#{str}{/red-fg}"
                     res.push str
         res
+
+    # получение параметра url
+    url_param: (str, param)->
+        if str && str.split("#{param}=")[1]
+            return str.split("#{param}=")[1].split('&')[0]
+        return false
+
