@@ -54,7 +54,7 @@ module.exports = do ->
     # возвращает либо массив параметров, либо проверяет есть ли название параметра среди переданных
     arg: (param)->
         arg = process.argv.slice(2)
-        return arg if param?
+        return arg unless param
         return arg.indexOf("#{param}") > -1
 
 

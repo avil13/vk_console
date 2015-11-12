@@ -5,6 +5,7 @@ node_modules/*
 
 views/public/*
 token.json
+npm-debug.log
 .idea/
 .directory
 .DS_Store

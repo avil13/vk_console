@@ -5,7 +5,8 @@ clc      = require 'cli-color'
 readline = require 'readline'
 h        = require './helper.coffee'
 token    = false
-user_id      = false
+user_id  = false
+
 
 # color
 log = (msg, error=false)-> console.log (if error then  clc.red("\n#{msg}\n") else clc.green("\n#{msg}\n"))
@@ -34,10 +35,10 @@ checkToken: (callback, err)->
                 }
         msg = """
             Вам нужно получить новый токен, пройдите по адресу
-             http://vk.cc/3DsQU0
+                #{clc.green('http://vk.cc/3DsQU0')}
             результат получившийся в адресной строке занесите сюда
             и перезапустите программу
-            >>
+            #{clc.green('>>')}
             """;
         unless h.arg('debug') then setTimeout (-> open('http://vk.cc/3DsQU0')), 1000
         rl.question msg, (answer)->
@@ -71,7 +72,7 @@ request: (_method, _params, _callback, _err)->
     if !_params['v'] then options.path.push "v=5.37"
     options.path = options.path.join('&')
 
-    if h.arg('debug') then console.log("\n\n#{options.path}\n\n") #debug
+    if h.arg('url') then console.log("\nhttps://#{options.host}/#{options.path}\n") #debug
 
     req = https.request options, (res)->
         str = ''
@@ -94,6 +95,8 @@ request: (_method, _params, _callback, _err)->
             if _err then _err err
     req.end()
 
+# alias for request
+req: @request
 
 
 # # # # #
