@@ -20,4 +20,7 @@ ScreenBlocks =
 
 # # # # # #
 
-vk.checkToken (data)-> console.log "OK!! ==> #{data}"
+vk.checkToken (data)->
+    console.log "OK!! ==> #{data}"
+
+# vk.request 'messages.getDialogs', {}, console.log

@@ -50,3 +50,11 @@ module.exports = do ->
             return str.split("#{param}=")[1].split('&')[0]
         return false
 
+    # проверка аргументов переданных при запуске
+    # возвращает либо массив параметров, либо проверяет есть ли название параметра среди переданных
+    arg: (param)->
+        arg = process.argv.slice(2)
+        return arg if param?
+        return arg.indexOf("#{param}") > -1
+
+

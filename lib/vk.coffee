@@ -39,7 +39,7 @@ checkToken: (callback, err)->
             и перезапустите программу
             >>
             """;
-        setTimeout ( -> open('http://vk.cc/3DsQU0') ), 1000
+        unless h.arg('debug') then setTimeout (-> open('http://vk.cc/3DsQU0')), 1000
         rl.question msg, (answer)->
             # // запись токена
             token = h.url_param(answer, 'access_token')
@@ -64,15 +64,14 @@ request: (_method, _params, _callback, _err)->
         method: 'GET'
         host: 'api.vk.com'
         port: 443
-        path: "/method/#{_method}?access_token=#{token}"
-    _path = []
+        path: ["/method/#{_method}?access_token=#{token}"]
 
     for own key, val of _params
-        _path.push "#{key}=#{if key == "message" then encodeURIComponent(val) else val}"
-    if !_params['v'] then _path.push "v=5.37"
-    options.path += _path.join('&')
+        options.path.push "#{key}=#{if key == "message" then encodeURIComponent(val) else val}"
+    if !_params['v'] then options.path.push "v=5.37"
+    options.path = options.path.join('&')
 
-    console.log("\n\n#{options.path}\n\n") #===
+    if h.arg('debug') then console.log("\n\n#{options.path}\n\n") #debug
 
     req = https.request options, (res)->
         str = ''
@@ -82,7 +81,8 @@ request: (_method, _params, _callback, _err)->
             if err then return log(err, 1)
             try
                 ans = JSON.parse(str)
-                console.log ans #===
+                if h.arg('debug') then console.log(ans) #debug
+
                 if ans.response
                     _callback? ans.response, ans, str
                 else
@@ -90,6 +90,7 @@ request: (_method, _params, _callback, _err)->
             catch e
                 log(e, 1)
         res.on 'error', (err)->
+            if h.arg('debug') then log(ans, 1) #debug
             if _err then _err err
     req.end()
 
