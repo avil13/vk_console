@@ -5,7 +5,6 @@ empty_ids = []
 
 module.exports = do ->
 
-
     # список друзей
     Friend = (id)->
         if friend_name[id]?
@@ -56,5 +55,22 @@ module.exports = do ->
         arg = process.argv.slice(2)
         return arg unless param
         return arg.indexOf("#{param}") > -1
+
+    # ten number
+    t: (d)-> if d < 10 then "0#{d}" else "#{d}"
+    # date
+    date: (date)->
+        d = new Date(date * 1000)
+        "#{@t(d.getHours())}:#{@t(d.getMinutes())} #{@t(d.getDate())}.#{@t(d.getMonth()+1)}.#{d.getFullYear()}"
+
+    extend: (old_obj, new_obj)->
+        for own k, v of new_obj
+            if typeof v == 'object' && v != undefined
+                @extend(old_obj[k], v)
+            else
+                old_obj[k] = new_obj[k] || old_obj[k]
+        old_obj
+
+
 
 

@@ -1,43 +1,73 @@
 vk = require('./vk.coffee')
-settings = require('./screen_settings.coffee')()
 h = require './helper.coffee'
+settings = require('./screen_settings.coffee')()
+
+config =
+    message_id: 0 #// переменная для хранения ID беседы
+    is_chat: false # // общаемя в чате или диалоге
+    can_read: false #// Разрешение на отметку сообщений как прочитанных
+    count_unread_msg: 0 #// количество не прочтенных сообщений
 
 
-module.exports = (ScreenBlocks)->
-    vk.checkToken() # проверяем токен
+module.exports =
+    # Настройки для задания чата по умолчанию
+    setConf: (options)-> h.extend config, options
 
-    message_id = 0 #// переменная для хранения ID беседы
-    can_read = false #// Разрешение на отметку сообщений как прочитанных
-    count_unread_msg = 0 #// количество не прочтенных сообщений
+    # получение объекта настроек
+    getConf: -> config
 
-    messages = (str = [])->
-        if typeof str == 'object'
-            str = JSON.parse str
-        ScreenBlocks.messages.setContent(str)
-        ScreenBlocks.messages.parent.render()
-    friendList = (arr)->
-        ScreenBlocks.FriendList.setItems([])
-        for v in arr then ScreenBlocks.FriendList.add(v)
-        ScreenBlocks.FriendList.parent.render()
+    # Список сообщений включая беседы
+    getDialogs: (callback, callback_err, offset = 0)->
+        options =
+            offset: offset
+            preview_length: 10
+            count: settings.f_count
+        vk
+        .pr('messages.getDialogs', options)
+        .then (obj)->
+            if callback? then callback obj
+        .catch (e)->
+            if callback_err? then callback_err e
 
-    do ->
-        # Список сообщений включая беседы
-        getDialogs: (offset = 0)->
-            options =
-                offset: offset
-                preview_length: 10
-                count: settings.f_count
-            vk.request 'messages.getDialogs', options, (obj)->
-                if obj
-                    list = h.friendList(obj)
-                    friendList(list)
-                else
-                    friendList(['Error...'])
+    # получение беседы
+    getHistory: (callback, callback_err, offset = 0)->
+        options =
+            offset: offset
+            preview_length: 10
+            count: settings.f_count
+
+        if config.is_chat
+            options.chat_id = config.message_id
+        else
+            options.user_id = config.message_id
+
+        vk
+        .pr('messages.getHistory', options)
+        .then (obj)->
+            if callback? then callback obj
+        .catch (e)->
+            if callback_err? then callback_err e
+
+    # отправка сообщений
+    send: (text, callback, callback_err)->
+        if config.message_id == 0 || text == '' || text == undefined then return false
+
+        options =
+            message: text
+
+        if config.is_chat
+            options.chat_id = config.message_id
+        else
+            options.user_id = config.message_id
+
+        vk
+        .pr('messages.send', options)
+        .then (obj)->
+            if callback? then callback obj
+        .catch (e)->
+            if callback_err? then callback_err e
 
 
-        # получение беседы
 
-        # отправка сообщений
-
-        #
-        #
+    #
+    #

@@ -20,7 +20,11 @@ ScreenBlocks =
 
 # # # # # #
 
-vk.checkToken (data)->
-    console.log "OK!! ==> #{data}"
+# vk.r 'messages.getDialogs', {}, console.log
+# vk.checkToken (data)-> console.log "OK!! ==> #{data}"
 
-# vk.request 'messages.getDialogs', {}, console.log
+action.setConf {message_id:84, is_chat: on}
+
+# action.send('Не обращайте внимания на это сообщение', console.log)
+
+
