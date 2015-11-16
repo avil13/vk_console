@@ -14,37 +14,10 @@ Singletone = do ->
         return
     Construct_singletone
 
+config =
+    ScreenBlocks: null
 
 module.exports = do ->
-
-    # список друзей
-    Friend = (id)->
-        if friend_name[id]?
-            friend_name[id]
-        else
-            empty_ids.push id
-
-        setTimeout (->
-                if empty_ids.length > 0
-                    vk.request 'users.get', {user_ids:empty_ids.join(','), name_case:'Nom'}, (data)->
-                        for f in data.items
-                            friend_name[f.id] = "#{f.first_name} #{f.last_name}"
-                        empty_ids = []
-            ), 1000
-        if friend_name[id]? then friend_name[id] else id
-
-    friendList: (arr)->
-        res = []
-        if arr.items?
-            for v in arr.items
-                if typeof v == 'object' && v.message?
-                    m = v.message
-                    str = "#{Friend(m.user_id)}"
-                    str += "#{if m.out == 1 then '»' else '«'} #{m.body} \t\t\t "
-                    str += if m.chat_id? then "chat__#{m.chat_id}" else "user__#{m.user_id}"
-                    if m.read_state == 1 then str = "{red-fg}#{str}{/red-fg}"
-                    res.push str
-        res
 
     # всплывающее сообщение
     msg: (str = " ", title = "Сообщение" )->
@@ -91,14 +64,38 @@ module.exports = do ->
     getID: (str)->
         re_u = /__u_\d+__/g.exec(str) # для ID пользователя
         if re_u
-            return {id: @int(re_u), is_chat: no}
+            return {message_id: @int(re_u), is_chat: no}
         re_ch = /__ch_\d+__/g.exec(str) # для ID чата
         if re_ch
-            return {id: @int(re_ch), is_chat: on}
+            return {message_id: @int(re_ch), is_chat: on}
         no
 
+    # # # # # #
 
+    # установка объекта экрана
+    setScreen: (scr)-> config.ScreenBlocks = scr
 
+    friendList: (arr)->
+        if config.ScreenBlocks?
+            config.ScreenBlocks.FriendList.setItems([])
+            if arr.items?
+                for v in arr.items
+                    if typeof v == 'object' && v.message?
+                        m = v.message
+                        str = "#{m.user_id} #{if m.out == 1 then '»' else '«'} #{m.body} \t\t\t "
+                        str += if m.chat_id? then "__ch_#{m.chat_id}__" else "__u_#{m.user_id}__"
+                        if m.read_state != 1 then str = "{red-fg}#{str}{/red-fg}"
+                        config.ScreenBlocks.FriendList.add(str)
+            config.ScreenBlocks.FriendList.parent.render()
 
-
-
+    historyList: (arr)->
+        if config.ScreenBlocks?
+            content = ''
+            if arr.items?
+                for v in arr.items
+                    content += "{bold}#{v.from_id}{/bold} #{@date(v.date)}\n #{v.body}\n\n"
+            content = content.replace(/\n+$/, '')
+            config.ScreenBlocks.messages.setContent(content)
+            config.ScreenBlocks.messages.setScrollPerc(100)
+            config.ScreenBlocks.txt.focus()
+            config.ScreenBlocks.messages.parent.render()
