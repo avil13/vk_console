@@ -21,3 +21,17 @@ describe 'helper-test', ->
 
     it 'date', ->
         expect(h.date(1447408397)).toEqual('12:53 13.11.2015')
+
+    it 'int', ->
+        expect(h.int('hello 101 man')).toEqual 101
+
+    it 'getID', ->
+        user = h.getID 'Иванов Иван __u_101010__'
+        expect(user).toEqual(jasmine.any(Object))
+        expect(user.id).toEqual(101010)
+        expect(user.is_chat).toEqual(false)
+
+        chat = h.getID 'Тестовый чат __ch_123456__'
+        expect(chat).toEqual(jasmine.any(Object))
+        expect(chat.id).toEqual(123456)
+        expect(chat.is_chat).toEqual(true)

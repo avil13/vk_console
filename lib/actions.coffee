@@ -13,8 +13,10 @@ module.exports =
     # Настройки для задания чата по умолчанию
     setConf: (options)-> h.extend config, options
 
+
     # получение объекта настроек
     getConf: -> config
+
 
     # Список сообщений включая беседы
     getDialogs: (callback, callback_err, offset = 0)->
@@ -28,6 +30,7 @@ module.exports =
             if callback? then callback obj
         .catch (e)->
             if callback_err? then callback_err e
+
 
     # получение беседы
     getHistory: (callback, callback_err, offset = 0)->
@@ -48,6 +51,7 @@ module.exports =
         .catch (e)->
             if callback_err? then callback_err e
 
+
     # отправка сообщений
     send: (text, callback, callback_err)->
         if config.message_id == 0 || text == '' || text == undefined then return false
@@ -66,8 +70,3 @@ module.exports =
             if callback? then callback obj
         .catch (e)->
             if callback_err? then callback_err e
-
-
-
-    #
-    #

@@ -3,6 +3,18 @@ vk = require('./vk.coffee')
 friend_name = {}
 empty_ids = []
 
+Singletone = do ->
+    instance = null
+    Construct_singletone = ->
+        if instance then return instance
+        if this and @constructor == Construct_singletone
+            instance = this
+        else
+            return new Construct_singletone
+        return
+    Construct_singletone
+
+
 module.exports = do ->
 
     # список друзей
@@ -21,15 +33,6 @@ module.exports = do ->
             ), 1000
         if friend_name[id]? then friend_name[id] else id
 
-    # всплывающее сообщение
-    msg: (str = " ", title = "Сообщение" )->
-        nn.notify {
-            title: title
-            message: str
-            icon: "#{__dirname}/../icon.png"
-            sound: true
-        }
-
     friendList: (arr)->
         res = []
         if arr.items?
@@ -42,6 +45,15 @@ module.exports = do ->
                     if m.read_state == 1 then str = "{red-fg}#{str}{/red-fg}"
                     res.push str
         res
+
+    # всплывающее сообщение
+    msg: (str = " ", title = "Сообщение" )->
+        nn.notify {
+            title: title
+            message: str
+            icon: "#{__dirname}/../icon.png"
+            sound: true
+        }
 
     # получение параметра url
     url_param: (str, param)->
@@ -58,6 +70,7 @@ module.exports = do ->
 
     # ten number
     t: (d)-> if d < 10 then "0#{d}" else "#{d}"
+
     # date
     date: (date)->
         d = new Date(date * 1000)
@@ -70,6 +83,21 @@ module.exports = do ->
             else
                 old_obj[k] = new_obj[k] || old_obj[k]
         old_obj
+
+    # получение числа
+    int: (str)-> parseInt("#{str}".replace(/\D+/g," "), 10) || 0
+
+    # получение ID пользователя или чата
+    getID: (str)->
+        re_u = /__u_\d+__/g.exec(str) # для ID пользователя
+        if re_u
+            return {id: @int(re_u), is_chat: no}
+        re_ch = /__ch_\d+__/g.exec(str) # для ID чата
+        if re_ch
+            return {id: @int(re_ch), is_chat: on}
+        no
+
+
 
 
 
