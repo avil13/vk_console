@@ -1,24 +1,17 @@
 nn = require('node-notifier')
-vk = require('./vk.coffee')
-friend_name = {}
-empty_ids = []
+action   = require './actions.coffee'
 
-Singletone = do ->
-    instance = null
-    Construct_singletone = ->
-        if instance then return instance
-        if this and @constructor == Construct_singletone
-            instance = this
-        else
-            return new Construct_singletone
-        return
-    Construct_singletone
 
+# # # # переменные для обработки особенностей скрипта
 config =
     ScreenBlocks: null
+    friend: {}
+    chat: {}
+    timer: {}
+    args: {}
 
-module.exports = do ->
 
+module.exports =
     # всплывающее сообщение
     msg: (str = " ", title = "Сообщение" )->
         nn.notify {
@@ -64,9 +57,11 @@ module.exports = do ->
     getID: (str)->
         re_u = /__u_\d+__/g.exec(str) # для ID пользователя
         if re_u
+            @errorStat re_u
             return {message_id: @int(re_u), is_chat: no}
         re_ch = /__ch_\d+__/g.exec(str) # для ID чата
         if re_ch
+            @errorStat re_ch
             return {message_id: @int(re_ch), is_chat: on}
         no
 
@@ -75,6 +70,9 @@ module.exports = do ->
     # установка объекта экрана
     setScreen: (scr)-> config.ScreenBlocks = scr
 
+    # # # # # #
+
+    # список диалогов слева
     friendList: (arr)->
         if config.ScreenBlocks?
             config.ScreenBlocks.FriendList.setItems([])
@@ -88,14 +86,52 @@ module.exports = do ->
                         config.ScreenBlocks.FriendList.add(str)
             config.ScreenBlocks.FriendList.parent.render()
 
+    # история сообщений выбранной беседы
     historyList: (arr)->
         if config.ScreenBlocks?
             content = ''
+            config.ScreenBlocks.stat.setContent('')
             if arr.items?
                 for v in arr.items
                     content += "{bold}#{v.from_id}{/bold} #{@date(v.date)}\n #{v.body}\n\n"
-            content = content.replace(/\n+$/, '')
+                content = content.replace(/\n+$/, '')
             config.ScreenBlocks.messages.setContent(content)
             config.ScreenBlocks.messages.setScrollPerc(100)
-            config.ScreenBlocks.txt.focus()
             config.ScreenBlocks.messages.parent.render()
+
+    # Описание ошибки
+    errorStat: (err='')->
+        err = err.error && err.error.error_msg || err
+        # err = Object.keys err
+        if config.ScreenBlocks?
+            config.ScreenBlocks.stat.setContent("==> #{err}")
+            config.ScreenBlocks.stat.parent.render()
+
+    # выполнение функции не чаще чем за указанный период времени
+    throttle: (func, delay = 1000)->
+        ->
+            context = this
+            unless config.args["#{func}"]
+                config.args["#{func}"] = []
+            config.args["#{func}"].push [].slice.call(arguments)
+
+            clearTimeout config.timer["#{func}"] || 0
+            config.timer["#{func}"] = setTimeout (->
+                    func.apply(context, config.args[func])
+                    config.args[func] = []
+                ), delay
+
+
+    # # #сохранение имени
+    # friend_save: (arr)->
+    #     for v in arr
+    #         if v.first_name && v.last_name
+    #             config.friend[v.id] = "#{v.first_name} #{v.last_name}"
+
+
+    # # получение имени друга
+    # friend: (id, callback)->
+    #     return config.friend[id] if config.friend[id]
+    #     if callback?
+    #         @throttle(callback)(id)
+    #

@@ -5,6 +5,7 @@ blessed  = require 'blessed'
 h        = require './helper.coffee'
 
 vk.checkToken ->
+    # экран консоли
     screen = blessed.screen()
     settings = require('./screen_settings.coffee')(screen)
 
@@ -14,45 +15,58 @@ vk.checkToken ->
     # // поле ввода
     ScreenBlocks.txt = blessed.Textarea(settings.txt)
     ScreenBlocks.box = blessed.box(settings.box)
+    ScreenBlocks.stat = blessed.box(settings.stat)
     ScreenBlocks.nav = blessed.box(settings.nav)
     screen.render()
 
     h.setScreen ScreenBlocks # передача объекта экрана
 
-    # выход
-    ScreenBlocks.FriendList.key ['escape'], (ch, key)-> process.exit(0)
+    # # # # # # # # # # # # # # # # # # # # # # #
+    # Создание функций для работы с сообщениями #
+    getDialogs = action.getDialogs.bind action, h.friendList.bind(h), h.errorStat.bind(h)
+    # getDialogs = h.throttle getDialogs
+    getHistory = action.getHistory.bind action, h.historyList.bind(h), h.errorStat.bind(h)
+    # getHistory = h.throttle getHistory
 
-    # перемещение по окнам
+
+    # выход # # # # # # # # # # # # # # # # # # #
+    ScreenBlocks.FriendList.key ['escape'], (ch, key)-> process.exit(0)
+    ScreenBlocks.messages.key ['escape'], (ch, key)-> ScreenBlocks.FriendList.focus()
+    ScreenBlocks.txt.key ['escape'], (ch, key)-> ScreenBlocks.FriendList.focus()
+
+    # перемещение по окнам # # # # # # # # # # # #
     screen.key ['t', 'T', 'е', 'Е'], (ch, key)-> ScreenBlocks.txt.focus()
     screen.key ['f', 'F', 'а', 'А'], (ch, key)-> ScreenBlocks.FriendList.focus()
     screen.key ['r', 'R', 'к', 'К'], (ch, key)-> ScreenBlocks.messages.focus()
+
     # // ******** focuses ********
     ScreenBlocks.FriendList.on 'focus', ->
-        action.getDialogs(h.friendList) # списко друзей слева
+        do getDialogs # списко друзей слева
         ScreenBlocks.box.setContent "{bold}Active:{/bold} Friend list [F]"
         screen.render()
 
     ScreenBlocks.txt.on 'focus', ->
+        do getHistory
         ScreenBlocks.box.setContent "{bold}Active:{/bold} Text write [T]"
         screen.render()
 
     ScreenBlocks.messages.on 'focus', ->
-        # Actions.messageAsReadest()
-        # Actions.getHistory()
+        do getHistory
         ScreenBlocks.box.setContent "{bold}Active:{/bold} Read message [R]"
         screen.render()
     # // ********
-    action.getDialogs h.friendList # списко друзей слева
+    ScreenBlocks.FriendList.focus()
 
-    # Выбор диалога для беседы
+    # Выбор диалога для беседы # # # # # # # # # # #
     ScreenBlocks.FriendList.on 'select', (index)->
         if index && index.content
             id = h.getID(index.content)
             if id?
                 action.setConf id
-                action.getHistory h.historyList
+                do getHistory
+                ScreenBlocks.txt.focus()
         else
-            console.log index, 'select error'
+            h.errorStat index.content
 
 
 

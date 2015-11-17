@@ -11,7 +11,11 @@ user_id  = false
 # color
 log = (msg, error=false)-> console.log (if error then  clc.red("\n#{msg}\n") else clc.green("\n#{msg}\n"))
 
-VK =
+# переменная для подсчета количества запросов
+count_of_requests = 0
+
+module.exports = do ->
+
     # // проверка наличия записи о токене и занесение его в память
     checkToken: (callback, err)->
         try
@@ -54,8 +58,6 @@ VK =
                 rl.close()
                 process.exit()
 
-
-
     # // отправка запроса
     request: (_method, _params, _callback, _err)->
         # // Если не активирован, просим пересоздать токен
@@ -73,6 +75,9 @@ VK =
         options.path = options.path.join('&')
 
         if h.arg('url') then console.log("\nhttps://#{options.host}/#{options.path}\n") #debug
+        if h.arg('req_stat') #debug
+            ++count_of_requests
+            h.errorStat "[#{count_of_requests}] https://#{options.host}/#{options.path}"
 
         req = https.request options, (res)->
             str = ''
@@ -95,15 +100,9 @@ VK =
                 if _err then _err err
         req.end()
 
+
     # Ответ промисом
     pr: (_method, _params)->
         self = @
-        return new Promise (resolve, reject)->
+        new Promise (resolve, reject)->
             self.request(_method, _params, resolve, reject)
-
-# alias for request
-VK.r = VK.req = VK.request
-
-# # # # #
-module.exports = VK
-

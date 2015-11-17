@@ -1,6 +1,6 @@
 module.exports = (screen)->
     {
-        FriendList:
+        FriendList: # список последних сообщений слева
             parent: screen
             alwaysScroll: false
             autoCommandKeys: true
@@ -22,7 +22,7 @@ module.exports = (screen)->
                         bg: 'green'
                 selected:
                     bg: 'blue'
-        messages:
+        messages: # текст переписки
             parent: screen
             autoCommandKeys: true
             scrollable: true
@@ -41,7 +41,7 @@ module.exports = (screen)->
 
             vi: true
 
-        txt:
+        txt: # поле ввода текста
             border:
                 type: 'line'
             inputOnFocus: true
@@ -59,7 +59,7 @@ module.exports = (screen)->
             top: '70%'
             width: '70%'
 
-        box:
+        box: # Блок для описания состояния
             height: '6%'
             width: '50%'
             top: '96%'
@@ -71,7 +71,19 @@ module.exports = (screen)->
                 bg: '#22aa22'
                 fg: '#222222'
 
-        nav:
+        stat: # Блок для описания ошибок
+            height: '6%'
+            width: '70%'
+            top: '98%'
+            left: '30%'
+            parent: screen
+            tags: true
+            content: "{bold}Stat:{/bold} ... "
+            style:
+                bg: '#223322'
+                fg: '#aa8877'
+
+        nav: # блок с описанием горячих клавиш справа
             height: '6%'
             width: '20%'
             top: '96%'
