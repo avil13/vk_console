@@ -1,4 +1,4 @@
-# vk       = require('./vk.coffee')
+vk       = require('./vk.coffee')
 settings = require('./screen_settings.coffee')
 action   = require('./actions.coffee')
 blessed  = require('blessed')

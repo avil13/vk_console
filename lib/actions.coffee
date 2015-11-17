@@ -26,8 +26,10 @@ module.exports =
             count: settings.f_count
         vk
         .pr('messages.getDialogs', options)
-        .then (obj)-> if callback? then callback obj
-        .catch (e)-> if callback_err? then callback_err e
+        .then (obj)->
+            if callback? then callback obj
+        .catch (e)->
+            if callback_err? then callback_err e
 
 
     # получение беседы
@@ -44,8 +46,10 @@ module.exports =
 
         vk
         .pr('messages.getHistory', options)
-        .then (obj)-> if callback? then callback obj
-        .catch (e)-> if callback_err? then callback_err e
+        .then (obj)->
+            if callback? then callback obj
+        .catch (e)->
+            if callback_err? then callback_err e
 
 
     # отправка сообщений
@@ -62,12 +66,14 @@ module.exports =
 
         vk
         .pr('messages.send', options)
-        .then (obj)-> if callback? then callback obj
-        .catch (e)-> if callback_err? then callback_err e
+        .then (obj)->
+            if callback? then callback obj
+        .catch (e)->
+            if callback_err? then callback_err e
 
 
-    # Возвращает расширенную информацию о пользователях
-    usersGet: ->
-        ids = [].join.call(arguments, ',')
-        options = user_ids: ids
-        vk.request('users.get', options, h.friend_save, h.errorStat)
+    # # Возвращает расширенную информацию о пользователях
+    # usersGet: ->
+    #     ids = [].join.call(arguments, ',')
+    #     options = user_ids: ids
+    #     vk.request('users.get', options, h.friend_save, h.errorStat)
