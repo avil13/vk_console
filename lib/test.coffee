@@ -1,4 +1,4 @@
-vk       = require('./vk.coffee')
+# vk       = require('./vk.coffee')
 settings = require('./screen_settings.coffee')
 action   = require('./actions.coffee')
 blessed  = require('blessed')
@@ -53,7 +53,7 @@ h.setScreen ScreenBlocks
 # console.log id
 
 
-h.friend 205387401
-# setTimeout (->
-#      console.log h.friend 205387401
-#     ), 2000
+action.usersGet 205387401
+setTimeout (->
+     console.log h.friend 205387401
+    ), 2000

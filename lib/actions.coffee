@@ -68,12 +68,6 @@ module.exports =
 
     # Возвращает расширенную информацию о пользователях
     usersGet: ->
-        if Array.isArray(arguments[0])
-            ids = arguments[0].join(',')
-        else if arguments.length == 1
-            ids = arguments[0]
-        else
-            ids = [].join.call(arguments, ',')
-
+        ids = [].join.call(arguments, ',')
         options = user_ids: ids
         vk.request('users.get', options, h.friend_save, h.errorStat)

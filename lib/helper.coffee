@@ -121,17 +121,14 @@ module.exports =
                     config.args[func] = []
                 ), delay
 
+    #сохранение имени
+    friend_save: (arr)->
+        for v in arr
+            if v.first_name && v.last_name
+                config.friend[v.id] = "#{v.first_name} #{v.last_name}"
 
-    # # #сохранение имени
-    # friend_save: (arr)->
-    #     for v in arr
-    #         if v.first_name && v.last_name
-    #             config.friend[v.id] = "#{v.first_name} #{v.last_name}"
-
-
-    # # получение имени друга
-    # friend: (id, callback)->
-    #     return config.friend[id] if config.friend[id]
-    #     if callback?
-    #         @throttle(callback)(id)
-    #
+    # получение имени друга
+    friend: (id)->
+        return config.friend[id] if config.friend[id]
+        if callback?
+            @throttle(action.usersGet)(id)
