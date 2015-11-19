@@ -53,7 +53,7 @@ h.setScreen ScreenBlocks
 # console.log id
 
 
-action.usersGet 205387401
-setTimeout (->
-     console.log h.friend 205387401
-    ), 2000
+# action.usersGet 205387401
+# setTimeout (->
+#      console.log h.friend 205387401
+#     ), 2000
