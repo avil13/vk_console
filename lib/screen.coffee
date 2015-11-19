@@ -24,9 +24,9 @@ vk.checkToken ->
     # # # # # # # # # # # # # # # # # # # # # # #
     # Создание функций для работы с сообщениями #
     getDialogs = action.getDialogs.bind action, h.friendList.bind(h), h.errorStat.bind(h)
-    # getDialogs = h.throttle getDialogs
+    # getDialogs = h.defer getDialogs
     getHistory = action.getHistory.bind action, h.historyList.bind(h), h.errorStat.bind(h)
-    # getHistory = h.throttle getHistory
+    # getHistory = h.defer getHistory
 
 
     # выход # # # # # # # # # # # # # # # # # # #
@@ -54,7 +54,7 @@ vk.checkToken ->
         do getHistory
         ScreenBlocks.box.setContent "{bold}Active:{/bold} Read message [R]"
         screen.render()
-    # // ********
+    #
     ScreenBlocks.FriendList.focus()
 
     # Выбор диалога для беседы # # # # # # # # # # #
