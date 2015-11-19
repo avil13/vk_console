@@ -1,34 +1,27 @@
+require('./log')
+blessed  = require 'blessed'
+
 h        = require('./helper')
+# delete require.cache['./helper']
 vk       = require('./vk')
-settings = require('./screen_settings')()
-action   = require('./actions')
-blessed  = require('blessed')
+action   = require('./action')
+
+# settings = require('./screen_settings')
+
+# console.log vk
+# process.exit 0
 
 
 ScreenBlocks = {}
-ScreenBlocks.txt =
-ScreenBlocks.nav =
-ScreenBlocks.stat =
-ScreenBlocks.messages =
-ScreenBlocks.FriendList =
-        focus: ->
-        setItems: ->
-        setScrollPerc: ->
-        parent:
-            render: ->
-        add: (el)-> console.log el
-        setContent: (data)-> console.log data
+ScreenBlocks.txt = ScreenBlocks.nav = ScreenBlocks.stat = ScreenBlocks.messages = ScreenBlocks.FriendList =
+    focus: ->
+    setItems: ->
+    setScrollPerc: ->
+    parent:
+        render: ->
+    add: (el)-> console.log el
+    setContent: (data)-> console.log data
 
-Singletone = do ->
-    instance = null
-    Construct_singletone = ->
-        if instance then return instance
-        if this and @constructor == Construct_singletone
-            instance = this
-        else
-            return new Construct_singletone
-        return
-    Construct_singletone
 
 
 # # # # # #
@@ -36,8 +29,8 @@ Singletone = do ->
 
 h.setScreen ScreenBlocks
 
-# vk.r 'messages.getDialogs', {}, console.log
-# vk.checkToken (data)-> console.log "OK!! ==> #{data}"
+vk.r 'messages.getDialogs', {}, console.log
+vk.checkToken (data)-> console.log "OK!! ==> #{data}"
 
 # action.setConf {message_id:6866606, is_chat: no}
 # action.getHistory console.log
@@ -49,8 +42,8 @@ h.setScreen ScreenBlocks
 
 # action.send('Не обращайте внимания на это сообщение', console.log)
 
-# id = h.getID 'иванов иван __u_123456789__'
-# console.log id
+id = h.getID 'иванов иван __u_123456789__'
+console.log id
 
 
 # action.usersGet 205387401

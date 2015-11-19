@@ -1,6 +1,5 @@
-h = require('./helper')
-vk = require('./vk')
-settings = require('./screen_settings')()
+vk       = require './vk.coffee'
+settings = require './screen_settings'
 
 
 config =
@@ -10,7 +9,9 @@ config =
     count_unread_msg: 0 #// количество не прочтенных сообщений
 
 
-module.exports = do ->
+
+module.exports =
+
     # Настройки для задания чата по умолчанию
     setConf: (options)-> h.extend config, options
 
@@ -74,8 +75,13 @@ module.exports = do ->
             if callback_err? then callback_err e
 
 
-    # Возвращает расширенную информацию о пользователях
-    usersGet: ->
-        ids = Array.prototype.join.call(arguments, ',')
-        options = user_ids: ids
-        vk.request('users.get', options, h.friend_save, h.errorStat)
+    # # Возвращает расширенную информацию о пользователях
+    # usersGet: (callback, callback_err)->
+    #     ids = Array.prototype.join.call(arguments, ',')
+    #     options = user_ids: ids
+    #     vk.request('users.get', options)
+    #     .then (obj)->
+    #         if callback? then callback obj
+    #     .catch (e)->
+    #         if callback_err? then callback_err e
+

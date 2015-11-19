@@ -1,8 +1,8 @@
-vk       = require './vk.coffee'
-settings = require './screen_settings.coffee'
-action   = require './actions.coffee'
+require('./log')
 blessed  = require 'blessed'
-h        = require './helper.coffee'
+vk       = require './vk'
+action   = require './action'
+h        = require './helper'
 
 vk.checkToken ->
     # экран консоли
@@ -17,17 +17,16 @@ vk.checkToken ->
     ScreenBlocks.box = blessed.box(settings.box)
     ScreenBlocks.stat = blessed.box(settings.stat)
     ScreenBlocks.nav = blessed.box(settings.nav)
-    screen.render()
+    # screen.render()
 
     h.setScreen ScreenBlocks # передача объекта экрана
 
     # # # # # # # # # # # # # # # # # # # # # # #
     # Создание функций для работы с сообщениями #
-    getDialogs = action.getDialogs.bind action, h.friendList.bind(h), h.errorStat.bind(h)
+    getDialogs = action.getDialogs.bind null, h.friendList.bind(h), h.errorStat.bind(h)
+    getHistory = action.getHistory.bind null, h.historyList.bind(h), h.errorStat.bind(h)
     # getDialogs = h.defer getDialogs
-    getHistory = action.getHistory.bind action, h.historyList.bind(h), h.errorStat.bind(h)
     # getHistory = h.defer getHistory
-
 
     # выход # # # # # # # # # # # # # # # # # # #
     ScreenBlocks.FriendList.key ['escape'], (ch, key)-> process.exit(0)
@@ -54,7 +53,7 @@ vk.checkToken ->
         do getHistory
         ScreenBlocks.box.setContent "{bold}Active:{/bold} Read message [R]"
         screen.render()
-    #
+    # * * * focus
     ScreenBlocks.FriendList.focus()
 
     # Выбор диалога для беседы # # # # # # # # # # #
@@ -72,3 +71,4 @@ vk.checkToken ->
 
 
 
+setTimeout (-> process.exit(0)), 5000

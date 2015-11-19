@@ -1,21 +1,17 @@
+h        = require('./helper')
 https    = require 'https'
 open     = require 'open'
 fs       = require 'fs'
-clc      = require 'cli-color'
 readline = require 'readline'
-h        = require './helper.coffee'
 token    = false
 user_id  = false
 
 
-# color
-log = (msg, error=false)-> console.log (if error then  clc.red("\n#{msg}\n") else clc.green("\n#{msg}\n"))
 
 # переменная для подсчета количества запросов
 count_of_requests = 0
 
-module.exports = do ->
-
+VK =
     # // проверка наличия записи о токене и занесение его в память
     checkToken: (callback, err)->
         try
@@ -106,3 +102,8 @@ module.exports = do ->
         self = @
         new Promise (resolve, reject)->
             self.request(_method, _params, resolve, reject)
+
+
+VK.r = VK.req = VK.request
+
+module.exports = VK

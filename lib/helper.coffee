@@ -1,5 +1,5 @@
-nn = require('node-notifier')
-action = require './actions'
+nn     = require 'node-notifier'
+action = require './action'
 
 
 # # # # переменные для обработки особенностей скрипта
@@ -11,15 +11,14 @@ config =
     args: {}
 
 
-module.exports =
+helper =
     # всплывающее сообщение
     msg: (str = " ", title = "Сообщение" )->
-        nn.notify {
+        nn.notify
             title: title
             message: str
             icon: "#{__dirname}/../icon.png"
             sound: true
-        }
 
     # получение параметра url
     url_param: (str, param)->
@@ -121,14 +120,18 @@ module.exports =
                     config.args[func] = []
                 ), delay
 
-    #сохранение имени
-    friend_save: (arr)->
-        for v in arr
-            if v.first_name && v.last_name
-                config.friend[v.id] = "#{v.first_name} #{v.last_name}"
+    # #сохранение имени
+    # friend_save: (arr)->
+    #     for v in arr
+    #         if v.first_name && v.last_name
+    #             config.friend[v.id] = "#{v.first_name} #{v.last_name}"
 
-    # получение имени друга
-    friend: (id)->
-        return config.friend[id] if config.friend[id]
-        if callback?
-            @defer(action.usersGet)(id)
+    # # получение имени друга
+    # friend: (id)->
+    #     return config.friend[id] if config.friend[id]
+    #     if callback?
+    #         @defer(action.usersGet)(id)
+
+
+
+module.exports = helper
