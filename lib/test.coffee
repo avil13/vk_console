@@ -1,8 +1,9 @@
-vk       = require('./vk.coffee')
-settings = require('./screen_settings.coffee')
-action   = require('./actions.coffee')
+h        = require('./helper')
+vk       = require('./vk')
+settings = require('./screen_settings')()
+action   = require('./actions')
 blessed  = require('blessed')
-h        = require('./helper.coffee')
+
 
 ScreenBlocks = {}
 ScreenBlocks.txt =
@@ -18,7 +19,6 @@ ScreenBlocks.FriendList =
         add: (el)-> console.log el
         setContent: (data)-> console.log data
 
-# Actions = require('./actions.coffee')(ScreenBlocks)
 Singletone = do ->
     instance = null
     Construct_singletone = ->

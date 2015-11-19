@@ -1,6 +1,7 @@
-vk = require('./vk.coffee')
-h = require('./helper.coffee')
-settings = require('./screen_settings.coffee')()
+h = require('./helper')
+vk = require('./vk')
+settings = require('./screen_settings')()
+
 
 config =
     message_id: 0 #// переменная для хранения ID беседы
@@ -9,7 +10,7 @@ config =
     count_unread_msg: 0 #// количество не прочтенных сообщений
 
 
-module.exports =
+module.exports = do ->
     # Настройки для задания чата по умолчанию
     setConf: (options)-> h.extend config, options
 
@@ -20,6 +21,7 @@ module.exports =
 
     # Список сообщений включая беседы
     getDialogs: (callback, callback_err, offset = 0)->
+        process.exit 0
         options =
             offset: offset
             preview_length: 10
@@ -72,8 +74,8 @@ module.exports =
             if callback_err? then callback_err e
 
 
-    # # Возвращает расширенную информацию о пользователях
-    # usersGet: ->
-    #     ids = [].join.call(arguments, ',')
-    #     options = user_ids: ids
-    #     vk.request('users.get', options, h.friend_save, h.errorStat)
+    # Возвращает расширенную информацию о пользователях
+    usersGet: ->
+        ids = Array.prototype.join.call(arguments, ',')
+        options = user_ids: ids
+        vk.request('users.get', options, h.friend_save, h.errorStat)
