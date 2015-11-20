@@ -91,7 +91,7 @@ helper =
             content = ''
             config.ScreenBlocks.stat.setContent('')
             if arr.items?
-                for v in arr.items
+                for v in arr.items.reverse()
                     content += "{bold}#{@friend(v.from_id)}{/bold} #{@date(v.date)}\n #{v.body}\n\n"
                 content = content.replace(/\n+$/, '')
             config.ScreenBlocks.messages.setContent(content)

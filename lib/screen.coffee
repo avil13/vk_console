@@ -29,8 +29,7 @@ vk.checkToken ->
     # Создание функций для работы с сообщениями #
     getDialogs = action.getDialogs.bind null, h.friendList.bind(h), h.errorStat.bind(h)
     getHistory = action.getHistory.bind null, h.historyList.bind(h), h.errorStat.bind(h)
-    # getDialogs = h.defer getDialogs
-    # getHistory = h.defer getHistory
+
 
     # выход # # # # # # # # # # # # # # # # # # #
     ScreenBlocks.FriendList.key ['escape'], (ch, key)-> process.exit(0)
@@ -73,8 +72,14 @@ vk.checkToken ->
         else
             h.errorStat index.content
 
+    # отправка сообщения
+    ScreenBlocks.txt.key ['C-c'], ->
+        action.send(
+                ScreenBlocks.txt.getValue()
+                , ->
+                    ScreenBlocks.txt.clearValue()
+                    screen.render()
+                    do h.defer getHistory, 300
+                , h.errorStat
+            )
 
-
-
-
-# setTimeout (-> process.exit(0)), 5000
