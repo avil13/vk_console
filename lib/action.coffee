@@ -78,3 +78,12 @@ module.exports =
         .then (obj)-> if callback? then callback obj
         .catch (e)-> if callback_err? then callback_err e
 
+    # Возвращает расширенную информацию о пользователях
+    getChat: (callback, callback_err)->
+        arg = Array.prototype.splice.call(arguments, 2)
+        options = chat_ids: arg.join(',')
+        vk.pr('messages.getChat', options)
+        .then (obj)-> if callback? then callback obj
+        .catch (e)-> if callback_err? then callback_err e
+
+

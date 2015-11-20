@@ -40,10 +40,10 @@ h.setScreen ScreenBlocks
 # console.log id
 
 
-h.usersGet = action.usersGet.bind null, h.friend_save.bind(h), h.errorStat.bind(h)
-console.log h.friend 205387401
-console.log h.friend 205387402
-setTimeout (->
-    console.log h.friend 205387401
-    console.log h.friend 205387402
-    ), 2000
+
+# h.usersGet = action.usersGet.bind null, h.friend_save.bind(h), h.errorStat.bind(h)
+h.getChat = action.getChat.bind null, h.chat_save.bind(h), h.errorStat.bind(h)
+# console.log h.friend(205387401), h.friend(205387402)
+# setTimeout (->
+#     console.log h.friend(205387401), h.friend(205387402)
+#     ), 2000

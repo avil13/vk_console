@@ -23,6 +23,7 @@ vk.checkToken ->
     h.setScreen ScreenBlocks
     # определение метода для имен пользователя
     h.usersGet = action.usersGet.bind null, h.friend_save.bind(h), h.errorStat.bind(h)
+    h.getChat = action.getChat.bind null, h.chat_save.bind(h), h.errorStat.bind(h)
 
     # # # # # # # # # # # # # # # # # # # # # # #
     # Создание функций для работы с сообщениями #
@@ -66,6 +67,8 @@ vk.checkToken ->
             if id?
                 action.setConf id
                 do getHistory
+                if id.is_chat
+                    ScreenBlocks.stat.setContent h.chat id.message_id
                 ScreenBlocks.txt.focus()
         else
             h.errorStat index.content

@@ -78,7 +78,8 @@ helper =
                 for v in arr.items
                     if typeof v == 'object' && v.message?
                         m = v.message
-                        str = "#{@friend(m.user_id)} #{if m.out == 1 then '»' else '«'} #{m.body} \t\t\t "
+                        str = "#{if m.chat_id? then @chat(m.chat_id) else @friend(m.user_id)} "
+                        str += "#{if m.out == 1 then '»' else '«'} #{m.body} \t\t\t "
                         str += if m.chat_id? then "__ch_#{m.chat_id}__" else "__u_#{m.user_id}__"
                         if m.read_state != 1 then str = "{red-fg}#{str}{/red-fg}"
                         config.ScreenBlocks.FriendList.add(str)
@@ -102,9 +103,6 @@ helper =
         err = err.error && err.error.error_msg || err
         # err = Object.keys err
         if config.ScreenBlocks?
-            # err = new Error
-            # line = err.lineNumber || ''
-            # file = err.fileName || ''
             config.ScreenBlocks.stat.setContent("==> #{err}")
             config.ScreenBlocks.stat.parent.render()
 
@@ -128,8 +126,10 @@ helper =
             if v.first_name? && v.last_name?
                 config.friend[v.id] = "#{v.first_name} #{v.last_name}"
 
-    # метод для отправки запроса для получения пользователей
+    # метод для отправки запроса для получения имен пользователей
     usersGet: no
+    # метод для отправки запроса для получения названий чатов
+    getChat: no
 
     # получение имени друга
     friend: (id)->
@@ -137,6 +137,17 @@ helper =
         if @usersGet? then @defer(@usersGet)(id)
         id
 
+    # сохранение названий чатов
+    chat_save: (arr)->
+        for v in arr
+            if v.title?
+                config.chat[v.id] = "{bold}#{v.title}{/bold}"
+
+    # получение имени чата
+    chat: (id)->
+        return config.chat[id] if config.chat[id]
+        if @getChat? then @defer(@getChat)(id)
+        id
 
 # ===
 module.exports = helper
