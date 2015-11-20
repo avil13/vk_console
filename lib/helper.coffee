@@ -1,14 +1,13 @@
 nn     = require 'node-notifier'
-action = require './action'
 
 
 # # # # переменные для обработки особенностей скрипта
 config =
     ScreenBlocks: null
-    friend: {}
-    chat: {}
-    timer: {}
-    args: {}
+    timer: {} # defer
+    args: {} # defer
+    friend: {} # message name
+    chat: {} # message name
 
 
 helper =
@@ -79,7 +78,7 @@ helper =
                 for v in arr.items
                     if typeof v == 'object' && v.message?
                         m = v.message
-                        str = "#{m.user_id} #{if m.out == 1 then '»' else '«'} #{m.body} \t\t\t "
+                        str = "#{@friend(m.user_id)} #{if m.out == 1 then '»' else '«'} #{m.body} \t\t\t "
                         str += if m.chat_id? then "__ch_#{m.chat_id}__" else "__u_#{m.user_id}__"
                         if m.read_state != 1 then str = "{red-fg}#{str}{/red-fg}"
                         config.ScreenBlocks.FriendList.add(str)
@@ -92,7 +91,7 @@ helper =
             config.ScreenBlocks.stat.setContent('')
             if arr.items?
                 for v in arr.items
-                    content += "{bold}#{v.from_id}{/bold} #{@date(v.date)}\n #{v.body}\n\n"
+                    content += "{bold}#{@friend(v.from_id)}{/bold} #{@date(v.date)}\n #{v.body}\n\n"
                 content = content.replace(/\n+$/, '')
             config.ScreenBlocks.messages.setContent(content)
             config.ScreenBlocks.messages.setScrollPerc(100)
@@ -103,6 +102,9 @@ helper =
         err = err.error && err.error.error_msg || err
         # err = Object.keys err
         if config.ScreenBlocks?
+            # err = new Error
+            # line = err.lineNumber || ''
+            # file = err.fileName || ''
             config.ScreenBlocks.stat.setContent("==> #{err}")
             config.ScreenBlocks.stat.parent.render()
 
@@ -121,17 +123,20 @@ helper =
                 ), delay
 
     # #сохранение имени
-    # friend_save: (arr)->
-    #     for v in arr
-    #         if v.first_name && v.last_name
-    #             config.friend[v.id] = "#{v.first_name} #{v.last_name}"
+    friend_save: (arr)->
+        for v in arr
+            if v.first_name? && v.last_name?
+                config.friend[v.id] = "#{v.first_name} #{v.last_name}"
 
-    # # получение имени друга
-    # friend: (id)->
-    #     return config.friend[id] if config.friend[id]
-    #     if callback?
-    #         @defer(action.usersGet)(id)
+    # метод для отправки запроса для получения пользователей
+    usersGet: no
+
+    # получение имени друга
+    friend: (id)->
+        return config.friend[id] if config.friend[id]
+        if @usersGet? then @defer(@usersGet)(id)
+        id
 
 
-
+# ===
 module.exports = helper

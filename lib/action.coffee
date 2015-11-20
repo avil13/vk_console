@@ -1,5 +1,6 @@
 vk       = require './vk.coffee'
-settings = require './screen_settings'
+h        = require './helper'
+settings = do require './screen_settings'
 
 
 config =
@@ -7,7 +8,6 @@ config =
     is_chat: false # // общаемя в чате или диалоге
     can_read: false #// Разрешение на отметку сообщений как прочитанных
     count_unread_msg: 0 #// количество не прочтенных сообщений
-
 
 
 module.exports =
@@ -22,17 +22,14 @@ module.exports =
 
     # Список сообщений включая беседы
     getDialogs: (callback, callback_err, offset = 0)->
-        process.exit 0
         options =
             offset: offset
             preview_length: 10
             count: settings.f_count
         vk
         .pr('messages.getDialogs', options)
-        .then (obj)->
-            if callback? then callback obj
-        .catch (e)->
-            if callback_err? then callback_err e
+        .then (obj)-> if callback? then callback obj
+        .catch (e)-> if callback_err? then callback_err e
 
 
     # получение беседы
@@ -42,6 +39,8 @@ module.exports =
             preview_length: 10
             count: settings.history_count
 
+        if !config.message_id then return callback_err "Не выбран диалог #{config.message_id}"
+
         if config.is_chat
             options.chat_id = config.message_id
         else
@@ -49,10 +48,8 @@ module.exports =
 
         vk
         .pr('messages.getHistory', options)
-        .then (obj)->
-            if callback? then callback obj
-        .catch (e)->
-            if callback_err? then callback_err e
+        .then (obj)-> if callback? then callback obj
+        .catch (e)-> if callback_err? then callback_err e
 
 
     # отправка сообщений
@@ -69,19 +66,15 @@ module.exports =
 
         vk
         .pr('messages.send', options)
-        .then (obj)->
-            if callback? then callback obj
-        .catch (e)->
-            if callback_err? then callback_err e
+        .then (obj)-> if callback? then callback obj
+        .catch (e)-> if callback_err? then callback_err e
 
 
-    # # Возвращает расширенную информацию о пользователях
-    # usersGet: (callback, callback_err)->
-    #     ids = Array.prototype.join.call(arguments, ',')
-    #     options = user_ids: ids
-    #     vk.request('users.get', options)
-    #     .then (obj)->
-    #         if callback? then callback obj
-    #     .catch (e)->
-    #         if callback_err? then callback_err e
+    # Возвращает расширенную информацию о пользователях
+    usersGet: (callback, callback_err)->
+        arg = Array.prototype.splice.call(arguments, 2)
+        options = user_ids: arg.join(',')
+        vk.pr('users.get', options)
+        .then (obj)-> if callback? then callback obj
+        .catch (e)-> if callback_err? then callback_err e
 

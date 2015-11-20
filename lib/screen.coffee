@@ -19,7 +19,10 @@ vk.checkToken ->
     ScreenBlocks.nav = blessed.box(settings.nav)
     # screen.render()
 
-    h.setScreen ScreenBlocks # передача объекта экрана
+    # передача объекта экрана
+    h.setScreen ScreenBlocks
+    # определение метода для имен пользователя
+    h.usersGet = action.usersGet.bind null, h.friend_save.bind(h), h.errorStat.bind(h)
 
     # # # # # # # # # # # # # # # # # # # # # # #
     # Создание функций для работы с сообщениями #
@@ -71,4 +74,4 @@ vk.checkToken ->
 
 
 
-setTimeout (-> process.exit(0)), 5000
+# setTimeout (-> process.exit(0)), 5000

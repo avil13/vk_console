@@ -3,6 +3,7 @@ https    = require 'https'
 open     = require 'open'
 fs       = require 'fs'
 readline = require 'readline'
+clc      = require 'cli-color'
 token    = false
 user_id  = false
 
@@ -12,6 +13,7 @@ user_id  = false
 count_of_requests = 0
 
 VK =
+
     # // проверка наличия записи о токене и занесение его в память
     checkToken: (callback, err)->
         try
@@ -38,8 +40,8 @@ VK =
                     #{clc.green('http://vk.cc/3DsQU0')}
                 результат получившийся в адресной строке занесите сюда
                 и перезапустите программу
-                #{clc.green('>>')}
-                """;
+                #{clc.green('>> ')}
+                """
             unless h.arg('debug') then setTimeout (-> open('http://vk.cc/3DsQU0')), 1000
             rl.question msg, (answer)->
                 # // запись токена
@@ -53,6 +55,7 @@ VK =
                 fs.writeFileSync "#{__dirname}/token.json", tkn, 'utf8', (err)-> if err then log(err, 1)
                 rl.close()
                 process.exit()
+
 
     # // отправка запроса
     request: (_method, _params, _callback, _err)->
