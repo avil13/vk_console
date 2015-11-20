@@ -23,7 +23,8 @@ ScreenBlocks.txt = ScreenBlocks.nav = ScreenBlocks.stat = ScreenBlocks.messages 
 
 h.setScreen ScreenBlocks
 
-# vk.r 'messages.getDialogs', {}, console.log
+vk.r 'messages.getDialogs', {}, console.log
+
 # vk.checkToken (data)-> console.log "OK!! ==> #{data}"
 
 # action.setConf {message_id:6866606, is_chat: no}

@@ -78,29 +78,26 @@ VK =
             ++count_of_requests
             h.errorStat "[#{count_of_requests}] https://#{options.host}/#{options.path}"
 
-        try
-            req = https.request options, (res)->
-                str = ''
-                res.setEncoding('utf8')
-                res.on 'data', (chunk)-> str += chunk
-                res.on 'end', (err)->
-                    if err then return log(err, 1)
-                    try
-                        ans = JSON.parse(str)
-                        if h.arg('debug') then console.log(ans) #debug
+        req = https.request options, (res)->
+            str = ''
+            res.setEncoding('utf8')
+            res.on 'data', (chunk)-> str += chunk
+            res.on 'end', (err)->
+                if err then return log(err, 1)
+                try
+                    ans = JSON.parse(str)
+                    if h.arg('debug') then console.log(ans) #debug
 
-                        if ans.response
-                            _callback? ans.response, ans, str
-                        else
-                            _err ans
-                    catch e
-                        log(e, 1)
-                res.on 'error', (err)->
-                    if h.arg('debug') then log(ans, 1) #debug
-                    if _err then _err err
-            req.end()
-        catch e
-            if _err then _err e
+                    if ans.response
+                        _callback? ans.response, ans, str
+                    else
+                        _err ans
+                catch e
+                    log(e, 1)
+            res.on 'error', (err)->
+                if h.arg('debug') then log(ans, 1) #debug
+                if _err then _err err
+        req.end()
 
 
     # Ответ промисом

@@ -8,6 +8,7 @@ config =
     args: {} # defer
     friend: {} # message name
     chat: {} # message name
+    msg_id: 0 # id последнего сообщения, глядя на него будем смотреть стоит ли обновлять
 
 
 helper =
@@ -69,6 +70,17 @@ helper =
     setScreen: (scr)-> config.ScreenBlocks = scr
 
     # # # # # #
+    # проверка новых диалогов
+    unreadest: (arr)->
+        str = ''
+        if arr.unread_dialogs?
+            if arr.items?
+                for v in arr.items
+                    if typeof v == 'object' && v.message? && v.unread?
+                        m = v.message
+                        str += "#{if m.chat_id? then @chat(m.chat_id) else @friend(m.user_id)}\n"
+            @msg str
+
 
     # список диалогов слева
     friendList: (arr)->
@@ -83,6 +95,7 @@ helper =
                         str += if m.chat_id? then "__ch_#{m.chat_id}__" else "__u_#{m.user_id}__"
                         if m.read_state != 1 then str = "{red-fg}#{str}{/red-fg}"
                         config.ScreenBlocks.FriendList.add(str)
+                @unreadest arr # если есть непрочитанные то сообщаем об этом
             config.ScreenBlocks.FriendList.parent.render()
 
     # история сообщений выбранной беседы
