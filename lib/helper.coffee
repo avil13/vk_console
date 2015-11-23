@@ -105,15 +105,41 @@ helper =
     # история сообщений выбранной беседы
     historyList: (arr)->
         if config.ScreenBlocks?
-            content = ''
+            content = []
             if arr.items?
                 for v in arr.items.reverse()
-                    content += "{bold}#{@friend(v.from_id)}{/bold} #{@date(v.date)}\n #{v.body}\n\n"
-                content = content.replace(/\n+$/, '')
+                    content.push "{bold}#{@friend(v.from_id)}{/bold} #{@date(v.date)}"
+                    content.push v.body
+                    content.push @attach(v) if v.attachments?
+                    content.push "\n"
+            content = content.join("\n")
             if cache.check('history', content)
                 config.ScreenBlocks.messages.setContent(content)
                 config.ScreenBlocks.messages.setScrollPerc(100)
                 config.ScreenBlocks.messages.parent.render()
+
+    # вложения
+    attach: (el, red = true)->
+        arr = []
+        if el.attachments?
+            arr.push "{red-fg}✪ ✪ ✪ attach ✪ ✪ ✪" if red
+            for v in el.attachments
+                if v.type == 'link' then arr.push v.link.url
+                if v.type == 'photo' then arr.push v.photo.photo_604
+                if v.type == 'video'
+                    arr.push "== video =="
+                    arr.push v.video.title
+
+                if v.type == 'wall'
+                    if v.wall.text? then arr.push v.wall.text
+                    if v.wall.attachments? then @attach(v.wall.attachments, false)
+
+                if v.type == 'audio'
+                    arr.push "= ♪ ♫ ♪ ♫ ♪ ="
+                    arr.push "{bold}#{v.audio.artist}{/bold} #{v.audio.title}"
+
+            arr.push "{/red-fg}" if red
+        arr.join "\n"
 
     # Описание ошибки
     errorStat: (err='')->
