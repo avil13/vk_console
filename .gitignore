@@ -1,7 +1,6 @@
 !.gitignore
 
 node_modules/*
-!node_modules/Actions.js
 
 views/public/*
 token.json

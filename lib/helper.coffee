@@ -133,6 +133,7 @@ helper =
                 if v.type == 'wall'
                     if v.wall.text? then arr.push v.wall.text
                     if v.wall.attachments? then @attach(v.wall.attachments, false)
+                    if v.wall.copy_history? then @attach(v.wall.copy_history, false)
 
                 if v.type == 'audio'
                     arr.push "= ♪ ♫ ♪ ♫ ♪ ="
