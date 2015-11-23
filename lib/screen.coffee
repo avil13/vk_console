@@ -27,8 +27,8 @@ vk.checkToken ->
 
     # # # # # # # # # # # # # # # # # # # # # # #
     # Создание функций для работы с сообщениями #
-    getDialogs = action.getDialogs.bind null, h.friendList.bind(h), h.errorStat.bind(h)
-    getHistory = action.getHistory.bind null, h.historyList.bind(h), h.errorStat.bind(h)
+    getDialogs = action.getDialogs.bind(null, h.friendList.bind(h), h.errorStat.bind(h))
+    getHistory = action.getHistory.bind(null, h.historyList.bind(h), h.errorStat.bind(h))
 
 
     # выход # # # # # # # # # # # # # # # # # # #
@@ -66,8 +66,8 @@ vk.checkToken ->
             if id?
                 action.setConf id
                 do getHistory
-                if id.is_chat
-                    ScreenBlocks.stat.setContent h.chat id.message_id
+                name = if id.is_chat then h.chat(id.message_id) else h.friend(id.message_id)
+                ScreenBlocks.stat.setContent "#{name}"
                 ScreenBlocks.txt.focus()
         else
             h.errorStat index.content
@@ -85,5 +85,5 @@ vk.checkToken ->
 
     # обновление
     setInterval getHistory, settings.listTimer
-    setInterval getDialogs, settings.listTimer * 1.5
+    setInterval getDialogs, settings.listTimer * 1.2
 

@@ -111,7 +111,6 @@ helper =
                     content += "{bold}#{@friend(v.from_id)}{/bold} #{@date(v.date)}\n #{v.body}\n\n"
                 content = content.replace(/\n+$/, '')
             if cache.check('history', content)
-                config.ScreenBlocks.stat.setContent('')
                 config.ScreenBlocks.messages.setContent(content)
                 config.ScreenBlocks.messages.setScrollPerc(100)
                 config.ScreenBlocks.messages.parent.render()
