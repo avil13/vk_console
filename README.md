@@ -1,4 +1,4 @@
-# vk_console
+# vk_console v.2
 ==========
 
 console script to read and write messanges from vk.com
