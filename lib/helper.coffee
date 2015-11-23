@@ -1,5 +1,5 @@
-nn     = require 'node-notifier'
-
+nn    = require 'node-notifier'
+cache = require './cache'
 
 # # # # переменные для обработки особенностей скрипта
 config =
@@ -85,8 +85,8 @@ helper =
     # список диалогов слева
     friendList: (arr)->
         if config.ScreenBlocks?
-            config.ScreenBlocks.FriendList.setItems([])
             if arr.items?
+                list = []
                 for v in arr.items
                     if typeof v == 'object' && v.message?
                         m = v.message
@@ -94,22 +94,27 @@ helper =
                         str += "#{if m.out == 1 then '»' else '«'} #{m.body} \t\t\t "
                         str += if m.chat_id? then "__ch_#{m.chat_id}__" else "__u_#{m.user_id}__"
                         if m.read_state != 1 then str = "{red-fg}#{str}{/red-fg}"
-                        config.ScreenBlocks.FriendList.add(str)
-                @unreadest arr # если есть непрочитанные то сообщаем об этом
-            config.ScreenBlocks.FriendList.parent.render()
+                        list.push str
+            if cache.check('message', list)
+                if cache.check('unreadest', arr)
+                    @unreadest arr # если есть непрочитанные то сообщаем об этом
+                config.ScreenBlocks.FriendList.setItems([])
+                for s in list then config.ScreenBlocks.FriendList.add(s)
+                config.ScreenBlocks.FriendList.parent.render()
 
     # история сообщений выбранной беседы
     historyList: (arr)->
         if config.ScreenBlocks?
             content = ''
-            config.ScreenBlocks.stat.setContent('')
             if arr.items?
                 for v in arr.items.reverse()
                     content += "{bold}#{@friend(v.from_id)}{/bold} #{@date(v.date)}\n #{v.body}\n\n"
                 content = content.replace(/\n+$/, '')
-            config.ScreenBlocks.messages.setContent(content)
-            config.ScreenBlocks.messages.setScrollPerc(100)
-            config.ScreenBlocks.messages.parent.render()
+            if cache.check('history', content)
+                config.ScreenBlocks.stat.setContent('')
+                config.ScreenBlocks.messages.setContent(content)
+                config.ScreenBlocks.messages.setScrollPerc(100)
+                config.ScreenBlocks.messages.parent.render()
 
     # Описание ошибки
     errorStat: (err='')->

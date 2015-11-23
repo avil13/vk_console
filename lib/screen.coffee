@@ -83,3 +83,7 @@ vk.checkToken ->
                 , h.errorStat
             )
 
+    # обновление
+    setInterval getHistory, settings.listTimer
+    setInterval getDialogs, settings.listTimer * 1.5
+
