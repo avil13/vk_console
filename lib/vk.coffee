@@ -7,6 +7,12 @@ clc      = require 'cli-color'
 token    = false
 user_id  = false
 
+log = (msg, error = false)->
+    if error
+        console.trace clc.red msg
+    else
+        console.log clc.green msg
+
 
 
 # переменная для подсчета количества запросов
@@ -37,12 +43,12 @@ VK =
                     }
             msg = """
                 Вам нужно получить новый токен, пройдите по адресу
-                    #{clc.green('http://vk.cc/3DsQU0')}
+                    #{clc.green('http://vk.cc/4Didpz')}
                 результат получившийся в адресной строке занесите сюда
                 и перезапустите программу
                 #{clc.green('>> ')}
                 """
-            unless h.arg('debug') then setTimeout (-> open('http://vk.cc/3DsQU0')), 1000
+            unless h.arg('debug') then setTimeout (-> open('http://vk.cc/4Didpz')), 1000
             rl.question msg, (answer)->
                 # // запись токена
                 token = h.url_param(answer, 'access_token')
@@ -91,7 +97,7 @@ VK =
                     if ans.response
                         _callback? ans.response, ans, str
                     else
-                        _err ans
+                        if _err? then _err(str) else log(str, 1)
                 catch e
                     log(e, 1)
             res.on 'error', (err)->

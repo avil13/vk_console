@@ -1,152 +1,92 @@
 ###
-coffee auction.coffee gr=10182695 post=64293 max=650 time=00:01
-coffee auction.coffee max=650 time=00:01 url=http://vk.com/club9488175?w=wall-9488175_24%2Fall
-coffee auction.coffee max=100 gr=8679781 post=56601
+
+coffee auction.coffee --max=650 --group=10182695 --post=64293
+coffee auction.coffee --max=650 --url=http://vk.com/muzkomissionka?w=wall-10182695_75349
 ###
 
-VK = require 'VK'
+vk = require './lib/vk'
 clc = require 'cli-color'
-myID =  require 'token'
+argv = require('yargs').argv
 
-# время в течении которого проверять записи
-upTime = 1500
-# переменная говорящая о том что последняя запись наша и в консоль не надо выводить уведомление
-lostIsMy = false
-# ставка ниже которой не опускаться
-min = 1
-# Время после которого остановиться
-doTime = false
-stopTime =
-    hour: 0
-    minute: 1
-    data: do ->
-            d = new Date()
-            1 + do d.getDate
+vk.checkToken (user)->
+    user = user.pop()
+    #
+    if !argv.group && !argv.post && !argv.url
+        console.log """
+        #{clc.cyan('Список параметров которые можно передать для работы:')}
+        #{clc.green('--max')}     Максимальная ставка [300]
+        #{clc.green('--group')}   id записи
+        #{clc.green('--post')}    id группы
+        #{clc.green('--url')}     URL до комментария на стене
+        #{clc.green('--timeout')} Время между запросами [2500]
+        Все ставки будут вестись до 00:01 слейдующего дня
+        """
+        return false
+    #
+    options =
+        group:   parseInt(argv.group)   || 0       # группа
+        post:    parseInt(argv.post)    || 0       # запись
+        max:     parseInt(argv.max)     || 300     # Максимальная ставка
+        timeout: parseInt(argv.timeout) || 2500    # время между проверками
+        time: do -> # время когда остановится проверка 00:01 слейдующего дня
+            d = new Date
+            d.setHours(23)
+            d.setMinutes(59)
+            d.setSeconds(59)
+            d.getTime() + (1000 * 60)
+    #
 
-# проверка времени аукциона
-_checkTime = ->
-    return false if doTime == false
-    d = new Date()
-    return (do d.getHours >= stopTime.hour && do d.getMinutes >=  stopTime.minute && do d.getDate >= stopTime.data)
+    if argv.url && !argv.post && !argv.group
+        myRe = /wall-(\d+)_(\d+)/g
+        myArray = myRe.exec(argv.url)
+        options.group = myArray[1]
+        options.post = myArray[2]
+        if !options.post && !options.group
+            console.log clc.red 'Не найдена группа или запись'
+            return false
 
-# строку в целое число
-int = (str)->
-    str += ''
-    parseInt(str.replace(/\D+/g,""), 10)
+    # даныне для запроса
+    options.max = parseInt options.max, 10
+    sendData =
+        owner_id: "-#{parseInt(options.group, 10)}"
+        post_id: options.post
+        need_likes: 0
+        offset: 0
+        count: 1
+        sort: 'desc'
 
-# отображение даты
-_date = (date)->
-    d = new Date(date * 1000)
-    do d.getHours + ':' + do d.getMinutes + '  ' + do d.getDate + '.' + (1 + do d.getMonth) + '.' + do d.getFullYear
+    # метод проверки времени
+    check = ->
+        if !sendData.post_id || sendData.owner_id >= 0
+            console.log clc.bgRedBright "Не верны параметры запросса [group:#{sendData.owner_id}][post:#{sendData.post_id}]"
+            do process.exit
+        if options.time < (new Date).getTime()
+            console.log clc.bgRedBright "Закончилось время аукциона"
+            do process.exit
 
-_parseUrl = (url)->
-    myRe = /wall-(\d+)_(\d+)/g
-    myArray = myRe.exec(url)
-    options.gr = myArray[1]
-    options.post = myArray[2]
-
-_getTime = (str)->
-    t = str.split ':'
-    if t.length == 2 then doTime = true
-    stopTime.hour = int t[0]
-    stopTime.minute = int t[1]
-
-
-
-# id пользователя
-user_id = int myID.user_id
-
-# опции программы
-options =
-    gr: false
-    post: false
-    max: false
-
-
-# плучение параметров для работы>
-arg = process.argv.slice 2
-
-for p in arg
-    options.gr   = int (p.split '=')[1] if (p.indexOf 'gr=') > -1
-    options.post = int (p.split '=')[1] if (p.indexOf 'post=') > -1
-    options.max  = int (p.split '=')[1] if (p.indexOf 'max=') > -1
-    options.max  = int (p.split '=')[1] if (p.indexOf 'max=') > -1
-    _parseUrl p if (p.indexOf 'url=') > -1
-    _getTime p  if (p.indexOf 'time=') > -1
-
-
-###
-# Lets Rock
-###
-
-# объект для получения комментариев
-sendData =
-    owner_id: - int(options.gr)
-    post_id: options.post
-    need_likes: 0
-    offset: 0
-    count: 1
-    sort: 'desc'
-    version: 5.28
-
-# объект для написания комментария
-bet =
-    owner_id: - int(options.gr)
-    post_id: options.post
-
-
-
-# метод для написания комментария
-addComment = (text)->
-    bet['text'] = int(text) + 1 + ''
-    VK.request 'wall.addComment', bet, (data)->
-        min = int bet.text
-        if data && data.response && data.response.cid
-            console.log clc.green "Предыдущая ставка: #{text}"
+    # проверка ставки
+    checkBet = (last_comment, callback)->
+        if last_comment.from_id == user.id
+            return false # наша ставка последняя
+        bet = parseInt(last_comment.text.replace(/\D+/g,""), 10)
+        if bet < options.max
+            callback(++bet)
         else
-            console.log clc.red "Не удалось установить ставку: #{text}"
+            console.log clc.red "К сожалению нашу максимальную ставку '#{options.max}' переплюнули: '#{bet}'"
+            do process.exit
 
-# вызов колбека проверки коммента
-_action = -> setTimeout getComments, upTime
+    # Запрос к странице
+    query = ->
+        do check
+        vk.req 'wall.getComments', sendData, (data)->
+            checkBet data.items.pop(), (bet)->
+                sendData['text'] = "#{bet}"
+                # делаем еще одну ставку
+                vk.req 'wall.addComment', sendData, (data)-> console.log clc.cyan "Еще одна ставка #{bet}"
 
 
-# метод для получения комментариев
-getComments = ->
-    if do _checkTime
-        console.log clc.bgRedBright "Закончилось время аукциона"
-        do process.exit
-
-    VK.request 'wall.getComments', sendData, ((data)->
-        # получаем данные ответа для работы
-        if data && data.response
-            res = data.response[1]
-        else
-            do _action
-            return console.log clc.red 'Error response'
-
-        # если последняя ставка была наша то ничего не делаем
-        if res.uid == user_id
-            console.log clc.green "Твоя ставка последняя: #{_date(res.date)}" if not lostIsMy
-            lostIsMy = true
-            return do _action
-        else
-            lostIsMy = false
-
-        # проверяем является ли сообщение ставкой
-        if int(res.text) > 1
-            if options.max > int(res.text)
-                addComment int(res.text) if min < int(res.text)
-            else
-                console.log clc.red "Ставка была превышена: #{int(res.text)}"
-                do process.exit
-
-        # loop
-        do _action
-        ),
-        -> do _action
-
-# запускаем программу
-do getComments
+    # повторяем запрос через заданный промежуток времени
+    setInterval query, options.timeout
 
 
 
@@ -154,4 +94,10 @@ do getComments
 
 
 
+
+
+
+
+
+    #
 

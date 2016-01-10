@@ -12,7 +12,8 @@
     "sqlite3": "^3.0.5"
   },
   "devDependencies": {
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "yargs": "^3.31.0"
   },
   "scripts": {
     "test": "jasmine-node spec --coffee --autotest --watch .",
