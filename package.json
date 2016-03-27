@@ -1,6 +1,6 @@
 {
   "name": "vk_console",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "'Pacaje what can read and post message from vk.com'",
   "main": "index.js",
   "dependencies": {
