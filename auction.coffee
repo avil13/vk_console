@@ -1,6 +1,5 @@
 ###
-
-coffee auction.coffee --max=650 --group=10182695 --post=64293
+coffee auction.coffee --max=650 --group=10182695 --post=64293 --timeout=5
 ###
 
 vk = require './lib/vk'
@@ -15,6 +14,12 @@ argv = require('yargs')
             describe: 'Максимальная ставка'
             type: 'number'
             demand: no
+        .options 't',
+            alias: 'timeout'
+            default: 3
+            describe: 'Секунды между проверками'
+            type: 'number'
+            demand: no
         .options 'g',
             alias: 'group'
             default: 10182695
@@ -26,24 +31,18 @@ argv = require('yargs')
             describe: 'id записи'
             type: 'number'
             demand: on
-            demand: no
-        .options 't',
-            alias: 'timeout'
-            default: 2.5
-            describe: 'Секунды между проверками'
-            type: 'number'
-            demand: no
         .argv
 
+
 vk.checkToken (user)->
-    user = user.pop()
+    user = user.pop() # пользователь
     time = do -> # время когда остановится проверка 00:01 слейдующего дня
         d = new Date
         d.setHours(23)
         d.setMinutes(59)
         d.setSeconds(59)
-        d.getTime() + (1000 * 60)
-    sendData =
+        d.getTime() + (3000 * 60)
+    sendData = # данные для отправки запроса
         owner_id: "-#{argv.g}"
         post_id: argv.p
         need_likes: 0
@@ -67,7 +66,7 @@ vk.checkToken (user)->
             process.stdout.write '.'
             return false # наша ставка последняя
         bet = parseInt(last_comment.text, 10)
-        if isNaN(bet) then return console.log clc.blue 'Проверте комментарии'
+        if isNaN(bet) then return console.log [clc.blue('Проверте комментарии:'), last_comment.text].join("\n")
         if bet <= currentBet then return console.log "ставка ниже последней"
         if bet < argv.m
             callback(++bet)
@@ -85,7 +84,7 @@ vk.checkToken (user)->
                     currentBet = bet
                     sendData['text'] = "#{bet}"
                     # делаем еще одну ставку
-                    vk.req 'wall.addComment', sendData, (data)-> console.log clc.cyan "Еще одна ставка #{bet}"
+                    vk.req 'wall.addComment', sendData, (data)-> console.log clc.cyan "\nЕще одна ставка #{bet}"
             .catch (err)->
                 setTimeout new_query, argv.t * 1000
                 console.log clc.red err
@@ -93,7 +92,7 @@ vk.checkToken (user)->
     # Start
     vk.pr 'groups.getById', { group_id: argv.g }
         .then (data)->
-            console.log "группа: #{clc.cyan (data.pop()).name}"
+            console.log "группа: #{clc.green (data.pop()).name}"
             do new_query
         .catch (err)->
             console.log clc.red 'Группа не найдена'
