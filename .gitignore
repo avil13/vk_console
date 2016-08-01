@@ -12,3 +12,4 @@ Thumbs.db
 *db.db*
 *.map
 *.log
+.vscode/

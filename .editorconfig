@@ -1,5 +1,14 @@
+# Корневой файл EditorConfig
+root = true
 
-[*]
+charset = utf-8
 indent_style = space
+
+[*.js]
 indent_size = 4
-trim_trailing_whitespace = true
+[*.slim]
+indent_size = 2
+
+# Для всех файлов используем unix-совместимые переносы строк
+end_of_line = lf
+insert_final_newline = true
