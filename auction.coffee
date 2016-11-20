@@ -16,7 +16,7 @@ argv = require('yargs')
             demand: no
         .options 't',
             alias: 'timeout'
-            default: 3
+            default: 1.2
             describe: 'Секунды между проверками'
             type: 'number'
             demand: no
