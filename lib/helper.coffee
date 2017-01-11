@@ -1,5 +1,6 @@
 nn    = require 'node-notifier'
 cache = require './cache'
+settings = require './screen_settings'
 
 # # # # переменные для обработки особенностей скрипта
 config =
@@ -14,11 +15,12 @@ config =
 helper =
     # всплывающее сообщение
     msg: (str = " ", title = "Сообщение" )->
-        nn.notify
-            title: title
-            message: str
-            icon: "#{__dirname}/../icon.png"
-            sound: true
+        if settings.do_notify
+            nn.notify
+                title: title
+                message: str
+                icon: "#{__dirname}/../icon.png"
+                sound: true
 
     # получение параметра url
     url_param: (str, param)->

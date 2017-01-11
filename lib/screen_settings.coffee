@@ -105,6 +105,6 @@ module.exports = (screen)->
         history_count: 25
         checkOnline: 60 * 1000 #// периоды между проверками online
 
+        do_notify: false
         message_title: 'Новое сообщение'
     }
-

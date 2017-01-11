@@ -1,7 +1,7 @@
 clc = require 'cli-color'
 
 # color
-GLOBAL.log = (msg, error=false, exit=false)->
+(global || GLOBAL).log = (msg, error=false, exit=false)->
     console.log process.argv[1], "\n"
     msg = JSON.stringify msg if typeof msg == 'object'
     if error
