@@ -1,33 +1,39 @@
 {
-  "name": "vk_console",
-  "version": "2.0.2",
-  "description": "'Pacaje what can read and post message from vk.com'",
-  "main": "index.js",
-  "dependencies": {
-    "blessed": "*",
-    "cli-color": "^0.3.2",
-    "coffee-script": "^1.10.0",
-    "node-notifier": "^4.3.1",
-    "open": "0.0.5",
-    "sqlite3": "^3.0.5"
-  },
-  "devDependencies": {
-    "jasmine-node": "^1.14.5",
-    "yargs": "^3.31.0"
-  },
-  "scripts": {
-    "test": "jasmine-node spec --coffee --autotest --watch .",
-    "postinstall": "",
-    "deps": "",
-    "vk": "node v2.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/avil13/vk_console"
-  },
-  "keywords": [
-    "vk.com"
-  ],
-  "author": "AVIL13",
-  "license": "BSD-2-Clause"
-}
+    "name": "vk_console",
+    "version": "2.0.2",
+    "description": "'Pacaje what can read and post message from vk.com'",
+    "main": "index.js",
+    "dependencies": {
+      "blessed": "*",
+      "cli-color": "^0.3.2",
+      "coffee-script": "^1.10.0",
+      "node-notifier": "^4.3.1",
+      "open": "0.0.5",
+      "sqlite3": "^3.0.5"
+    },
+    "devDependencies": {
+      "husky": "^1.3.1",
+      "jasmine-node": "^1.14.5",
+      "yargs": "^3.31.0"
+    },
+    "scripts": {
+      "test": "jasmine-node spec --coffee --autotest --watch .",
+      "postinstall": "",
+      "deps": "",
+      "vk": "node v2.js"
+    },
+    "husky": {
+      "hooks": {
+        "prepare-commit-msg": "./hooks/pre-commit-msg.sh"
+      }
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/avil13/vk_console"
+    },
+    "keywords": [
+      "vk.com"
+    ],
+    "author": "AVIL13",
+    "license": "BSD-2-Clause"
+  }
